@@ -1,5 +1,4 @@
-import { NextResponse } from "next/server";
-import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import { authMiddleware } from "@clerk/nextjs";
  
 export default authMiddleware({
   publicRoutes: [
@@ -9,29 +8,13 @@ export default authMiddleware({
     "/cart",
     "/privacy-policy",
     "/terms",
-    "/api/webhook"
+    "/api/webhook",
+    "/sign-in",  
+    "/sign-up"
   ],
-  afterAuth(auth, req) {
-    if (auth.userId && auth.isPublicRoute) {
-      let path = "/";
-
-      if (auth.userId) {
-        path = `/`;
-      }
-
-      const pathSelection = new URL(path, req.url);
-      return NextResponse.redirect(pathSelection);
-    }
-
-    if (!auth.userId && !auth.isPublicRoute) {
-      return redirectToSignIn({ returnBackUrl: req.url });
-    }
-
-    // if (auth.userId && !auth.orgId && req.nextUrl.pathname !== "/select-org") {
-    //   const orgSelection = new URL("/select-org", req.url);
-    //   return NextResponse.redirect(orgSelection);
-    // }
-  }
+  ignoredRoutes: [
+    "/api/webhook"
+  ]
 });
  
 export const config = {

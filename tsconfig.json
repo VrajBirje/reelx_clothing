@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(platform)/(dashboard)/_context/SidebarContext.tsx", "app/(platform)/(dashboard)/_components/topbar.tsx", "app/(platform)/(dashboard)/project/[id]/page.jsx", "app/(platform)/(dashboard)/create-project/page.jsx", "app/(platform)/(dashboard)/create-tasks/page.jsx", "app/(platform)/(dashboard)/leaves-form/page.jsx", "app/(platform)/(dashboard)/reimbursement-form/page.jsx", "tailwind.config.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(public)/_context/SidebarContext.tsx", "app/(public)/_components/topbar.tsx", "app/(public)/project/[id]/page.jsx", "app/(public)/create-project/page.jsx", "app/(public)/create-tasks/page.jsx", "app/(public)/leaves-form/page.jsx", "app/(public)/reimbursement-form/page.jsx", "tailwind.config.ts"],
   "exclude": ["node_modules"]
 }

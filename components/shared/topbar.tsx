@@ -13,7 +13,7 @@ const topbarItems = [
   },
   {
     name: "About Us", // should be in footer of page (footer should not be fixed for ) 
-    href: "/about-us",
+    href: "/about",
     icon: FaTasks,
   },
   {
@@ -28,7 +28,7 @@ const topbarItems = [
   },
   {
     name: "Order History",
-    href: "/order-history",
+    href: "/orders",
     icon: FaShoppingCart,
   },
 ];

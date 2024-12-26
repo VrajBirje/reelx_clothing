@@ -2,13 +2,21 @@ import { NextResponse } from "next/server";
 import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
  
 export default authMiddleware({
-  publicRoutes: ["/"],
+  publicRoutes: [
+    "/",
+    "/shop",
+    "/about",
+    "/cart",
+    "/privacy-policy",
+    "/terms",
+    "/api/webhook"
+  ],
   afterAuth(auth, req) {
     if (auth.userId && auth.isPublicRoute) {
-      let path = "/shop";
+      let path = "/";
 
       if (auth.userId) {
-        path = `/shop`;
+        path = `/`;
       }
 
       const pathSelection = new URL(path, req.url);

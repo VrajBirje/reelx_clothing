@@ -5,6 +5,8 @@ import { siteConfig } from "@/config/site";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/Footer";
+import { Announcement } from "@/components/shared/announcement";
+import { useState, useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,11 +21,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <ClerkProvider>
       <html lang="en">
         <body className={`${inter.className} min-h-screen flex flex-col`}>
-          <Navbar />
+          <div className="flex flex-col z-50 top-0 fixed w-full">
+            <Announcement />
+            <Navbar />
+          </div>
           <main className="flex-1">{children}</main>
           <Footer />
         </body>

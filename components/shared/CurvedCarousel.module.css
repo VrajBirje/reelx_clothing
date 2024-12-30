@@ -1,0 +1,43 @@
+.carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  perspective: 1000px;
+  /* Adds depth for the 3D effect */
+}
+
+.image {
+  width: 18vw;
+  height: 46vh;
+  object-fit: cover;
+  /* border-radius: 10px; */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: rotateY(15deg) scale(1);
+  /* Default transform for all images */
+  transition: transform 0.3s ease-in-out;
+}
+
+.image:nth-child(4) {
+  transform: rotateY(-30deg) scale(1.1);
+  margin: 0 20px;
+  /* Curve leftmost image */
+}
+
+.image:nth-child(3) {
+  transform: rotateY(-15deg) scale(1.05);
+  height: 43vh;
+  /* Slight curve */
+}
+
+.image:nth-child(2) {
+  transform: rotateY(15deg) scale(1.05);
+  height: 43vh;
+  /* Slight curve */
+}
+
+.image:nth-child(1) {
+  transform: rotateY(30deg) scale(1.1);
+  /* Curve rightmost image */
+  margin: 0 20px;
+}

@@ -88,7 +88,7 @@ export const Navbar = async () => {
           </div>
         </div> */}
         <Search />
-        <User />
+        <Link href='/profile'><User /></Link>
         <Heart />
         <ShoppingCart />
 

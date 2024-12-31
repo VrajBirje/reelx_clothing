@@ -29,12 +29,12 @@ const menuItems = [
   {
     label: "My Orders",
     icon: Package,
-    href: "/profile/orders"
+    href: "/orders"
   },
   {
     label: "My Wishlist",
     icon: Heart,
-    href: "/profile/wishlist"
+    href: "/wishlist"
   },
   {
     label: "Recently Viewed",
@@ -68,7 +68,7 @@ export default function ProfileSidebar() {
 
   return (
     <div className=" rounded-lg shadow-lg p-4 space-y-2">
-      {/* <ProfileHeader/> */}
+      <ProfileHeader/>
       {menuItems.map((item) => (
         <Button
           key={item.label}

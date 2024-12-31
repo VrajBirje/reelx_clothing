@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
-  icons: [{ url: "/next.svg", href: "/next.svg" }],
+  icons: [{ url: "/logo.png", href: "/logo.png" }],
 };
 
 export default function RootLayout({

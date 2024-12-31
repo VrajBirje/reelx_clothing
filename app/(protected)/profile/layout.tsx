@@ -7,7 +7,7 @@ interface ProfileLayoutProps {
 
 export default function ProfileLayout({ children }: ProfileLayoutProps) {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container h-full mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar */}
         <div className="w-full md:w-1/4">
@@ -16,7 +16,7 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
         
         {/* Main Content */}
         <div className="flex-1">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="rounded-lg shadow-lg p-6">
             {children}
           </div>
         </div>

@@ -27,7 +27,7 @@ const textFont = Poppins({
 const HomePage = () => {
 
   return (
-    <div className="pt-20 md:pt-24 2xl:max-w-screen-xl mx-auto w-full">
+    <div className="pt-20 md:pt-24 2xl:max-w-screen-xl mx-auto w-full ">
       {/* <div className="flex items-center justify-center flex-col">
         <div
           className={cn(

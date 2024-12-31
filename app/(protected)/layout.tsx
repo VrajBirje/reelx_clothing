@@ -28,9 +28,9 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <div className="h-full bg-slate-100">
+    <div className="min-h-screen">
       {userData && <UserDataProvider userData={userData} />}
-      <main className="pt-40 pb-20 bg-slate-100">{children}</main>
+      <main className="pt-24 pb-10">{children}</main>
     </div>
   );
 }

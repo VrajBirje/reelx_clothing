@@ -1,8 +1,9 @@
-import { UserProfile, auth } from "@clerk/nextjs";
-import { ProfileForm } from "./components/profile-form";
+import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import { Greeting } from "./components/greeting";
+import { ProfileForm } from "./components/profile-form";
 
-export default async function MyProfilePage() {
+export default function MyProfilePage() {
   const { userId } = auth();
 
   if (!userId) {
@@ -10,14 +11,12 @@ export default async function MyProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">My Profile</h1>
-        <p className="text-muted-foreground">
-          Manage your personal information and preferences
-        </p>
+    <div className="max-w-5xl mx-auto space-y-4 p-6">
+      <Greeting />
+      
+      <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6">
+        <ProfileForm />
       </div>
-      <ProfileForm />
     </div>
   );
 }

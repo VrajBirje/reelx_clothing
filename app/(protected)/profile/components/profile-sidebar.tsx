@@ -65,7 +65,7 @@ export default function ProfileSidebar() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 space-y-2">
+    <div className=" rounded-lg shadow-lg p-4 space-y-2">
       {menuItems.map((item) => (
         <Button
           key={item.label}

@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import MyProfile from "./sections/my-profile/page";
+import MyProfilePage from "./(sections)/my-profile/page";
 
 export default async function ProfilePage() {
   const { userId } = auth();
@@ -9,5 +9,5 @@ export default async function ProfilePage() {
     redirect("/sign-in");
   }
 
-  return <MyProfile />;
+  return <MyProfilePage />;
 }

@@ -13,12 +13,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import ProfileHeader from "./profile-header";
 
 const menuItems = [
   {
     label: "My Profile",
     icon: User,
-    href: "/profile/my-profile"
+    href: "/profile"
   },
   {
     label: "Delivery Address",
@@ -60,12 +61,14 @@ export default function ProfileSidebar() {
   };
 
   const handleLogout = async () => {
+    localStorage.removeItem('userData');
     await signOut();
     router.push("/");
   };
 
   return (
     <div className=" rounded-lg shadow-lg p-4 space-y-2">
+      {/* <ProfileHeader/> */}
       {menuItems.map((item) => (
         <Button
           key={item.label}
@@ -81,7 +84,7 @@ export default function ProfileSidebar() {
             </Link>
           ) : (
             <div className="flex items-center">
-              <item.icon className="mr-2 h-4 w-4" />
+              <item.icon className="mr-4 h-4 w-4" />
               {item.label}
             </div>
           )}

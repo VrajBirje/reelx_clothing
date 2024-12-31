@@ -32,13 +32,11 @@ export function ProfileForm() {
   const form = useForm<ProfileFormValues>();
 
   useEffect(() => {
-    // Get user data from localStorage
     const storedData = localStorage.getItem("userData");
     if (storedData) {
       const parsedData = JSON.parse(storedData) as UserData;
       setUserData(parsedData);
 
-      // Set form default values
       form.reset({
         firstName: parsedData.firstName || "",
         lastName: parsedData.lastName || "",
@@ -86,7 +84,6 @@ export function ProfileForm() {
 
   const toggleEdit = () => {
     if (isEditing && userData) {
-      // Reset form to current userData if canceling edit
       form.reset({
         firstName: userData.firstName,
         lastName: userData.lastName,

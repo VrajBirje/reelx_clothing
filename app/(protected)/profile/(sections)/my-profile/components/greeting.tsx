@@ -19,7 +19,7 @@ export function Greeting() {
   }, []);
 
   return (
-    <div className="mb-0 p-8 bg-white rounded-lg border border-gray-200 shadow-md">
+    <div className="mb-0 pb-8 bg-white rounded-lg">
       <h1 className="text-3xl font-semibold text-gray-900 leading-relaxed">
         {greeting}, {user?.firstName} 👋
       </h1>

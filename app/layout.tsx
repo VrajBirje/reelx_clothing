@@ -6,14 +6,14 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/Footer";
 import { Announcement } from "@/components/shared/announcement";
-import { useState, useEffect } from "react";
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
-  icons: [{ url: "/next.svg", href: "/next.svg" }],
+  icons: [{ url: "/logo.png", href: "/logo.png" }],
 };
 
 export default function RootLayout({
@@ -30,7 +30,9 @@ export default function RootLayout({
             <Announcement />
             <Navbar />
           </div>
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">{children}
+          <Toaster />
+          </main>
           <Footer />
         </body>
       </html>

@@ -10,7 +10,8 @@ export default authMiddleware({
     "/terms",
     "/api/webhook",
     "/sign-in",  
-    "/sign-up"
+    "/sign-up",
+    "/product"
   ],
   ignoredRoutes: [
     "/api/webhook"

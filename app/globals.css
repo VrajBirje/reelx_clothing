@@ -117,3 +117,7 @@ body,
   transform: translateY(-100%);
   opacity: 0;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Edge */
+}

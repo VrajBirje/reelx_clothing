@@ -1,0 +1,35 @@
+.home {
+    max-width: 1280px;
+}
+
+.homecategory{
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .homecarousel {
+        height: 60vh;
+    }
+    .homeimg{
+        flex-direction: column;
+        /* flex-wrap: wrap; */
+        width: 100vw;
+        margin: 20px 0;
+        /* height: fit-content; */
+        /* justify-content: center; */
+        /* align-items: center; */
+        gap: 10px;
+    }
+    .homeimg1{
+        width: 100%;
+        height: 30vh;
+    }
+    .curvedcar{
+        display: none;
+    }
+
+    .homecategory{
+        display: none;
+    }
+
+}

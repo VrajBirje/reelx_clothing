@@ -1,0 +1,21 @@
+@media (max-width: 768px) {
+    .shopleft {
+        display: none;
+    }
+
+    .shopright {
+        width: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    .shopright {
+        height: 100vh;
+    }
+    .shop{
+        height: 100vh;
+    }
+    .shopcardbox{
+        padding-bottom: 10px;
+    }
+}

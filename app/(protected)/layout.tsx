@@ -30,7 +30,7 @@ export default async function ProtectedLayout({
   return (
     <div className="min-h-screen">
       {userData && <UserDataProvider userData={userData} />}
-      <main className="pt-24 pb-10">{children}</main>
+      <main className="protectlayout pt-24 pb-10">{children}</main>
     </div>
   );
 }

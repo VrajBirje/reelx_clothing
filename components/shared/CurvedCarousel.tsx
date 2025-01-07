@@ -2,7 +2,7 @@ import React from "react";
 
 const NewArrivals = () => {
     return (
-        <div className="w-full flex flex-col items-center justify-center gap-[20px]">
+        <div className="curvedcar w-full flex flex-col items-center justify-center gap-[20px]">
             <div className="text-2xl font-light">
                 NEW ARRIVALS
             </div>

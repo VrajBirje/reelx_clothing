@@ -1,0 +1,45 @@
+@media (max-width: 768px) {
+    .cart {
+        padding: 0px 10px;
+    }
+
+    .cartlr {
+        flex-direction: column;
+    }
+
+    .cartleft {
+        width: 100%;
+    }
+
+    .carttrash {
+        display: none;
+    }
+
+    .cartcardamount {
+        display: none;
+    }
+
+    .cartcardamount2 {
+        display: block;
+    }
+
+    .cartcardname {
+        width: calc(90vw - 136px);
+    }
+
+    .cardcardheart {
+        padding: 0;
+    }
+
+    .cartcheckout{
+        width: 100%;
+    }
+}
+
+.cartcardamount2 {
+    display: none;
+}
+
+.cardcardheart {
+    padding: 3px 5px;
+}

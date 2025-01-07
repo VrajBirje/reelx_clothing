@@ -2,10 +2,12 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import { User } from 'lucide-react';
 import { Heart } from 'lucide-react';
 import { ShoppingCart } from 'lucide-react';
+import { Sidebar } from './sidebar/Sidebar';
+import "./test.css"
 
 
 export const Navbar = async () => {
@@ -27,27 +29,32 @@ export const Navbar = async () => {
 
   return (
     <nav
-      id="navbar" 
-      className="px-10 w-full h-16 border-b shadow-sm bg-white flex items-center justify-between transition-all duration-300 ease-in-out"
+      id="navbar"
+      className="nav px-10 w-full h-16 border-b shadow-sm bg-white flex items-center justify-between transition-all duration-300 ease-in-out"
     >
-      <div className="flex justify-start items-center gap-5 w-[15vw]">
-        <p className='text-sm'>Shop</p>
-        <p className='text-sm'>About</p>
+      <div className="nav1 flex justify-start items-center gap-5 w-[15vw]">
+        <Link href='/shop'><p className='text-sm'>Shop</p></Link>
+        <p className='text-sm '>About</p>
         <p className='text-sm'>Contact</p>
       </div>
 
+
       {/* center section */}
       <div className='flex items-center justify-center gap-3' >
-        <img src="./logo.png" alt="" className='h-11' />
-        <p className='text-3xl font-medium'>Reelx.</p>
+        {/* <Menu size={26} strokeWidth={1.5} className='navmenu mr-2' /> */}
+        <Sidebar/>
+        <Link href='/' className='navlogo flex items-center justify-center gap-3'>
+          <img src="./logo.png" alt="" className='navlogo2 h-11' />
+          <p className='navlogo1 text-3xl font-medium'>Reelx.</p>
+        </Link>
       </div>
 
       {/* left section  */}
-      <div className='flex items-center justify-end gap-6 w-[15vw]'>
-        <Search />
-        <Link href='/profile'><User /></Link>
-        <Link href='/wishlist'><Heart /></Link>
-        <Link href='/cart'><ShoppingCart /></Link>
+      <div className='navleft flex items-center justify-end gap-6'>
+        <Search className='navlogo3' strokeWidth={1.5} />
+        <Link className='navpro' href='/profile'><User size={26} strokeWidth={1.5}/></Link>
+        <Link href='/wishlist'><Heart size={26} strokeWidth={1.5}/></Link>
+        <Link href='/cart'><ShoppingCart size={26} strokeWidth={1.5}/></Link>
       </div>
     </nav>
   );

@@ -4,27 +4,36 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Heart, Ruler, ShoppingBag } from 'lucide-react'
+import { Heart, Ruler, Share2, ShoppingBag } from 'lucide-react'
 import React from 'react'
+import "./product.css"
 
 const page = () => {
   return (
-    <div className='flex pt-[20px] justify-center bg-white 2xl:max-w-screen-xl mx-auto w-full flex-col items-center gap-[10px] '>
-      <p className='text-xs font-medium'>Home / Relax-Fit / Gym-Wear / Printed Oversized T-Shirt</p>
-      <div className='w-full flex items-start justify-center mt-[20px] gap-[20px]'>
-        <div className='product-images w-[68%] flex flex-wrap overflow-y-auto'>
-          <img src="/assets/img6.png" className='h-[90vh] w-[50%]' alt="" />
-          <img src="/assets/img8.png" className='h-[90vh] w-[50%]' alt="" />
-          <img src="/assets/img6.png" className='h-[90vh] w-[50%]' alt="" />
+    <div className='productmain flex py-[20px] justify-center bg-white px-[4%] w-full flex-col items-center gap-[10px] '>
+      <p className='text-xs font-medium'>Home / Shop / Gym-Wear / <b>Printed Oversized T-Shirt</b></p>
+      <div className='productmain2 w-full flex items-start justify-center mt-[20px] gap-[20px]'>
+        <div className='productimgbox w-[68%] flex flex-wrap overflow-y-auto'>
+          <img src="/assets/img6.png" className='productimg1 w-[50%]' alt="" />
+          <img src="/assets/img6.png" className='productimg1 w-[50%]' alt="" />
+          <img src="/assets/img6.png" className='productimg1 w-[50%]' alt="" />
         </div>
-        <div className='product-info w-[32%] h-[90vh] flex flex-col gap-[20px]'>
+        <div className='productimgbox2 w-[100%] flex flex-col '>
+          <img src="/assets/img6.png" className='productimg1 w-[100%]' alt="" />
+          <div className="flex w-[100%] items-center justify-start p-[10px] gap-[10px]">
+            <img src="/assets/img6.png" className='productimg12 w-[60px] h-[70px]' alt="" />
+            <img src="/assets/img6.png" className='productimg12 w-[60px] h-[70px]' alt="" />
+            <img src="/assets/img6.png" className='productimg12 w-[60px] h-[70px]' alt="" />
+          </div>
+        </div>
+        <div className='productinfo flex flex-col gap-[20px]'>
           <div className='w-full flex items-center justify-between'>
             <p className='text-md font-semibold'>Printed Gym Relax-Fit T-Shirt</p>
             <Heart />
           </div>
           <div className='flex flex-col items-start jusify-center gap-[5px]'>
             <div className="prices w-full flex items-center justify-start gap-[20px]">
-              <p className='text-xl text-black font-regular'>Rs. 599.00</p>
+              <p className='text-2xl text-black font-semibold'>Rs. 599.00</p>
               <p className='text-md line-through text-gray-400 font-regular'>Rs. 899.00</p>
               <p className='text-xs font-semibold py-[3px] px-[5px] bg-black text-white '>30% OFF</p>
             </div>
@@ -38,14 +47,14 @@ const page = () => {
                 <p className='text-xs font-semibold'>Size Chart</p>
               </div>
             </div>
-            <div className='flex w-full items-center justify-start gap-[20px]'>
-              <div className='border border-gray-300 py-[5px] px-[30px] font-regular text-md'>S</div>
-              <div className='border border-gray-300 py-[5px] px-[30px] font-regular text-md'>M</div>
-              <div className='border border-gray-300 py-[5px] px-[30px] font-regular text-md'>L</div>
-              <div className='border border-gray-300 py-[5px] px-[30px] font-regular text-md'>XL</div>
+            <div className='flex w-full items-center justify-start flex-wrap gap-[20px]'>
+              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>S</div>
+              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>M</div>
+              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>L</div>
+              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>XL</div>
             </div>
           </div>
-          <p className='font-light text-gray-500 text-xs'>Tip: Review the Size Chart Before Buying any Product</p>
+          <p className='font-light text-gray-500 text-xs'>Tip: Review the Size Chart before buying the Product</p>
           <div className='Buttons flex flex-col gap-[20px]'>
             <button className='w-full border border-black py-[10px] flex items-center justify-center gap-[10px]'>
               <ShoppingBag size={18} />
@@ -100,13 +109,24 @@ const page = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-              <AccordionTrigger className="text-sm">Is it accessible?</AccordionTrigger>
+              <AccordionTrigger className="text-sm font-bold">Return & Exchange Policy</AccordionTrigger>
               <AccordionContent className="text-xs">
-                Yes. It adheres to the WAI-ARIA design pattern.
+                <div className="text-xs flex flex-col items-start justify-start gap-1">
+                  <p>• <b>Return/Exchange Period:</b> Within 7 days of delivery</p>
+                  <p>• <b>Product Condition:</b> Unworn, unwashed, with tags intact</p>
+                  <p>• <b>Quality Check:</b> Defective products can be returned/exchanged</p>
+                  <p>• <b>Reverse Shipping:</b> Customer pays return shipping, unless defective</p>
+                  <p>• <b>Exchange Option:</b> Size/color exchange based on availability</p>
+                </div>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          <p>share</p>
+          <div className="flex items-center justify-center mt-10">
+            <div className="flex py-3 px-10 border border-black w-[40%] items-center justify-center gap-[10px]">
+              <Share2 size={16} />
+              <p className="text-sm font-medium">Share</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

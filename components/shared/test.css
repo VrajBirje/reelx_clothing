@@ -1,0 +1,131 @@
+@media (max-width: 768px) {
+
+    /* navbar */
+    .nav1 {
+        display: none;
+    }
+
+    .navlogo2 {
+        height: 4.5vh;
+    }
+
+    .navlogo1 {
+        font-size: large;
+    }
+
+    .navlogo3 {
+        font-size: 24px;
+    }
+
+    .navlogo {
+        gap: 5px;
+    }
+
+    .navpro {
+        display: none;
+    }
+
+    .nav {
+        padding: 0 14px;
+        height: 10vh;
+        width: 100vw;
+    }
+
+    .navmenu {
+        display: block;
+    }
+
+    /* announcement */
+    .announce {
+        width: 100vw;
+        height: 40px;
+        overflow: hidden;
+        /* Ensures content doesn't spill outside */
+        position: relative;
+        white-space: nowrap;
+        /* Keeps text on a single line */
+    }
+
+    .announcetext {
+        display: inline-block;
+        position: absolute;
+        animation: slideRight 10s linear infinite;
+        /* Adjust duration as needed */
+        white-space: nowrap;
+    }
+
+    /* card */
+    .trend {
+        flex-wrap: wrap;
+        width: 100vw;
+        padding: 0 20px;
+    }
+
+    .cardbox {
+        margin-bottom: 14px;
+        width: calc(50vw - 26px);
+    }
+
+    .cardimg {
+        height: 26vh;
+    }
+
+    .cardtag {
+        top: 0;
+        bottom: auto;
+    }
+
+    .cardamount {
+        /* flex-direction: column; */
+        align-items: center;
+        justify-content: start;
+        gap: 5px;
+    }
+
+    /* footer */
+    .footer {
+        flex-direction: column;
+        padding: 30px;
+    }
+
+    .footer1 {
+        width: 100%;
+    }
+
+    .footersocial {
+        display: flex;
+    }
+    .footersocial2 {
+        display: none;
+    }
+    .footerlinks{
+        display: none;
+    }
+
+}
+
+
+@keyframes slideRight {
+    from {
+        transform: translateX(-100%);
+        /* Start outside of view from the left */
+    }
+
+    to {
+        transform: translateX(100%);
+        /* End outside of view on the right */
+    }
+
+}
+
+@media (min-width: 768px) {
+    .navmenu {
+        display: none;
+    }
+    .footersocial {
+        display: none;
+    }
+    .footerlinks2{
+        display: none;
+    }
+}

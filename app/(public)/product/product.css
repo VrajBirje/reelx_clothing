@@ -1,0 +1,34 @@
+@media (max-width: 768px) {
+    .productmain{
+        width: 100vw;
+        padding: 20px 20px;
+    }
+    .productmain2{
+        flex-direction: column;
+    }
+    .productinfo{
+        width: 100%;
+    }
+    .productimg{
+        width: 100%;
+    }
+    .productimg1{
+        width: 100%;
+    }
+    .productimgbox{
+        display: none;
+    }
+}
+@media (min-width: 768px) {
+    .productimg1{
+        height: 80vh;
+        width: 50%;
+    }
+    .productimgbox2{
+        display: none;
+    }
+    .productinfo{
+        width: 32%;
+        height: 90vh;
+    }
+}

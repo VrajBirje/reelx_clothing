@@ -25,11 +25,11 @@ export const Announcement = () => {
 
   return (
     <div
-      className={`w-full h-8 text-white bg-black flex items-center font-semibold justify-center text-sm transition-all duration-300 ease-in-out ${
+      className={`announce w-full h-8 text-white bg-black flex items-center font-semibold justify-center text-sm transition-all duration-300 ease-in-out ${
         showAnnouncement ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[-100%]"
       }`}
     >
-      Limited Time Prices + Free Shipping | 15% OFF on 2 or more products
+      <div className="announcetext">Limited Time Prices + Free Shipping | 15% OFF on 2 or more products</div>
     </div>
   );
 };

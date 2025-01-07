@@ -8,7 +8,7 @@ const Trending = () => {
             <div className="text-2xl font-light">
                 BEST SELLERS
             </div>
-            <div className='flex w-full justify-between'>
+            <div className='trend flex w-full justify-between'>
                 <CardBox />
                 <CardBox />
                 <CardBox />

@@ -1,0 +1,18 @@
+@media (max-width: 768px) {
+    .wishlist{
+        padding: 20px;
+    }
+    .wishcards{
+        gap: 0;
+    }
+    .wishcard{
+        margin-bottom: 0;
+    }
+    .protectlayout{
+        padding-top: calc(40px + 10vh);
+    }
+}
+
+.wishcard{
+    margin-bottom: 16px;
+}

@@ -32,7 +32,7 @@ const Carousel = () => {
   return (
     <div className="relative w-full max-w-full h-100">
       {/* Carousel Image */}
-      <div className="w-full h-[88vh] overflow-hidden">
+      <div className="homecarousel w-full h-[88vh] overflow-hidden">
         <img
           src={images[currentSlide]}
           alt={`Slide ${currentSlide + 1}`}

@@ -18,11 +18,11 @@ const textFont = Poppins({
 const HomePage = () => {
 
   return (
-    <div className="pt-28 md:pt-24 2xl:max-w-screen-xl mx-auto w-full ">
+    <div className="pt-28 md:pt-24 w-full ">
       <Carousel />
-      <div className="flex flex-col w-full justify-center my-10 items-center">
+      <div className="flex flex-col w-full px-[30px] justify-center my-10 items-center">
         <p className="homecategory hometop font-light text-xl">TOP CATEGORIES</p>
-        <div className="homeimg w-[100%] h-[70vh] flex itmes-center justify-between">
+        <div className="homeimg w-[100%] h-[70vh] flex itmes-center justify-center gap-[30px]">
           {images.map((image, index) => (
             <div key={index} className="homeimg1 relative h-full w-[25vw] p-0 flex items-center justify-center flex-col gap-5" style={{ backgroundImage: `url(${image.src})`, backgroundSize: "cover", backgroundPosition: "center", }}>
               <p className="text-2xl text-white font-bold col-white">{image.name}</p>

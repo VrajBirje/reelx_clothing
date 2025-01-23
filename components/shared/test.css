@@ -128,4 +128,7 @@
     .footerlinks2{
         display: none;
     }
+    .cardbox{
+        border: 0.5px solid rgba(128, 128, 128, 0.182);
+    }
 }

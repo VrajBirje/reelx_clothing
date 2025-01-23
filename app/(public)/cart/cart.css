@@ -40,6 +40,10 @@
     display: none;
 }
 
+.carttopmobile {
+    display: none;
+}
+
 .cardcardheart {
     padding: 3px 5px;
 }

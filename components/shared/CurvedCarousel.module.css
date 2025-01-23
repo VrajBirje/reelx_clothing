@@ -7,6 +7,41 @@
   /* Adds depth for the 3D effect */
 }
 
+.carousel-container {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.5), transparent);
+  position: relative;
+  width: 100%; /* Full width */
+  overflow: hidden; /* Hide overflow for smooth animation */
+}
+
+.carousel-track {
+  display: flex;
+  gap: 20px; /* Adjust gap between images */
+  animation: scroll 20s linear infinite; /* Infinite scrolling animation */
+}
+
+.carousel-image {
+  width: 18vw;
+  height: 46vh;
+  object-fit: cover;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+@keyframes scroll {
+  0% {
+      transform: translateX(0);
+  }
+  100% {
+      transform: translateX(-100%); /* Move one full carousel width */
+  }
+}
+
+/* Add hover effect for a 3D tilt */
+.carousel-image:hover {
+  transform: scale(1.1) rotateY(15deg);
+}
+
 .image {
   width: 18vw;
   height: 46vh;

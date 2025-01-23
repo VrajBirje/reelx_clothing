@@ -7,6 +7,7 @@ import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/Footer";
 import { Announcement } from "@/components/shared/announcement";
 import { Toaster } from 'sonner';
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,9 +22,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
+
   return (
     <ClerkProvider>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js"/>
       <html lang="en">
         <body className={`${inter.className} min-h-screen flex flex-col`}>
           <div className="flex flex-col z-50 top-0 fixed w-full">
@@ -31,7 +33,7 @@ export default function RootLayout({
             <Navbar />
           </div>
           <main className="flex-1">{children}
-          <Toaster />
+            <Toaster />
           </main>
           <Footer />
         </body>

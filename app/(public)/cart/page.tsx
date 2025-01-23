@@ -1,10 +1,29 @@
 "use client"
 import { Heart, ShoppingBag, Trash2, X } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import "./cart.css"
+import axios from "axios";
+
+interface UserData {
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  phone: string | null;
+  id: string;
+}
 
 const Page = () => {
   // Define an array of products
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  // Use useEffect to ensure localStorage is accessed only on the client
+  useEffect(() => {
+    const storedData = localStorage.getItem("userData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData) as UserData;
+      setUserData(parsedData);
+    }
+  }, []);
   const shipping = 99.00;
   const discount = 199.00;
   const products = [
@@ -52,9 +71,111 @@ const Page = () => {
   // Calculate final amount
   const finalAmount = productTotal + shipping - discount;
 
+  // const checkoutHandler = (amount: number) => {
+  //   axios
+  //     .get(`${process.env.BACKEND_URL}/orders/getkey`)
+  //     // .then(({ data: { key } }) => {
+  //     //   return axios.post("http://localhost:5000/api/orders/", {
+  //     //     total_amount: amount,
+  //     //     user_id: 1,
+  //     //     address_id: 1,
+  //     //     payment_method: "card",
+  //     //   }).then(({ data: { order } }) => ({ key, order }));
+  //     // })
+  //     .then(({ data: {key} }) => {
+  //       const options = {
+  //         key: key,
+  //         amount: amount,
+  //         currency: "INR",
+  //         name: "Reelx",
+  //         description: "Test Transaction",
+  //         image: "https://example.com/your_logo",
+  //         order_id: 3, // Use the correct order ID
+  //         callback_url: `${process.env.BACKEND_URL}/orders/verify`,
+  //         prefill: {
+  //           name: userData?.firstName,
+  //           email: userData?.email,
+  //           contact: userData?.phone,
+  //         },
+  //         notes: {
+  //           address: "Razorpay Corporate Office",
+  //         },
+  //         theme: {
+  //           color: "#000000",
+  //         },
+  //       };
+
+  //       const razor = new window.Razorpay(options);
+  //       razor.open();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error during checkout:", error);
+  //     });
+  // };
+  const checkoutHandler = async (amount: number) => {
+    // const { data: { key } } = await axios.get(`${process.env.BACKEND_URL}/orders/getkey`)
+    const { data: { key } } = await axios.get("http://localhost:5000/api/orders/getkey")
+
+    const { data: { order } } = await axios.post("http://localhost:5000/api/orders/", {
+      amount: amount,
+      user_id: 1,
+      address_id: 1,
+      payment_method: "card",
+    })
+
+    console.log(order);
+    console.log(key);
+    // const options = {
+    //   key: key, // Enter the Key ID generated from the Dashboard
+    //   amount: data.total_amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    //   currency: "INR",
+    //   name: "Reelx",
+    //   description: "Test Transaction",
+    //   image:"https://upload.wikimedia.org/wikipedia/commons/f/f9/Wikimedia_Brand_Guidelines_Update_2022_Wikimedia_Logo_Brandmark.png",
+    //   order_id: data.order_id, // This is a sample Order ID. Pass the id obtained in the response of Step 1
+    //   callback_url: "http://localhost:5000/api/orders/verify",
+    //   prefill: {
+    //     name: userData?.firstName,
+    //     email: userData?.email,
+    //     contact: userData?.phone,
+    //   },
+    //   notes: {
+    //     address: "Razorpay Corporate Office",
+    //   },
+    //   theme: {
+    //     color: "#000000",
+    //   },
+    // };
+    var options = {
+      key: key, // Enter the Key ID generated from the Dashboard
+      amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: "INR",
+      name: "Reelx",
+      description: "Test Transaction",
+      image: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Wikimedia_Brand_Guidelines_Update_2022_Wikimedia_Logo_Brandmark.png",
+      order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      callback_url: "http://localhost:3000/cart",
+      prefill: {
+        name: userData?.firstName,
+        email: userData?.email,
+        contact: userData?.phone,
+      },
+      notes: {
+        "address": "Razorpay Corporate Office"
+      },
+      theme: {
+        "color": "#000000"
+      }
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
+  }
+
+
+
   return (
     <div className='cart flex py-[20px] justify-center bg-white 2xl:max-w-screen-xl mx-auto w-full flex-col items-center gap-[30px] '>
-      <div className='w-full flex justify-between items-start items-center gap-2 p-2 border-b-[1px] border-gray'>
+      <div className='carttopmobile w-full flex justify-between items-start items-center gap-2 p-2 border-b-[1px] border-gray'>
         <div className='flex flex-col w-[40%] gap-0'>
           <p className='text-xs font-light'>Total :</p>
           <p className='text-l font-bold'>
@@ -157,7 +278,7 @@ const Page = () => {
                 ₹ {finalAmount}
               </p>
             </div>
-            <button className='w-full text-sm font-semibold border border-black bg-black flex items-center justify-center text-white py-2 gap-3'>CHECKOUT</button>
+            <button onClick={() => checkoutHandler(finalAmount)} className='w-full text-sm font-semibold border border-black bg-black flex items-center justify-center text-white py-2 gap-3'>CHECKOUT</button>
           </div>
         </div>
       </div>

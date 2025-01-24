@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 import { Poppins } from "next/font/google";
 import Carousel from "@/components/shared/Carousel";
 import CurvedCarousel from "@/components/shared/CurvedCarousel";

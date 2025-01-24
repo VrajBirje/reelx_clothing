@@ -10,6 +10,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import Image from 'next/image'
 
 export const Footer = () => {
     return (
@@ -17,7 +18,9 @@ export const Footer = () => {
             <div className='footer w-full flex flex justify-center items-start py-20 md:pt-24 2xl:max-w-screen-xl mx-auto w-full'>
                 <div className="footer1 flex flex-col w-[50%] items-start gap-[20px] h-full justify-between">
                     <div className="flex items-center justify-center gap-3">
-                        <img src="./logo.jpg" alt="" className="h-11" />
+                        <div  className="h-11 aspect-[3/2] relative" >
+                            <Image src="/logo.jpg" alt="" fill={true} className="absolute" />
+                        </div>
                         <p className="text-3xl font-medium">Reelx.</p>
                     </div>
                     <p className="text-xs w-[85%]">

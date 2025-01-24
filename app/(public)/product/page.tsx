@@ -7,6 +7,7 @@ import {
 import { Heart, Ruler, Share2, ShoppingBag } from 'lucide-react'
 import React from 'react'
 import "./product.css"
+import Image from "next/image"
 
 const page = () => {
   return (
@@ -14,16 +15,16 @@ const page = () => {
       <p className='text-xs font-medium'>Home / Shop / Gym-Wear / <b>Printed Oversized T-Shirt</b></p>
       <div className='productmain2 w-full flex items-start justify-center mt-[20px] gap-[20px]'>
         <div className='productimgbox w-[68%] flex flex-wrap overflow-y-auto'>
-          <img src="/assets/img6.png" className='productimg1 w-[50%]' alt="" />
-          <img src="/assets/img6.png" className='productimg1 w-[50%]' alt="" />
-          <img src="/assets/img6.png" className='productimg1 w-[50%]' alt="" />
+          <div className='productimg1 relative w-[50%]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
+          <div className='productimg1 relative w-[50%]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
+          <div className='productimg1 relative w-[50%]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
         </div>
         <div className='productimgbox2 w-[100%] flex flex-col '>
-          <img src="/assets/img6.png" className='productimg1 w-[100%]' alt="" />
+          <div className='productimg1 relative h-[50vh] w-[100%]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
           <div className="flex w-[100%] items-center justify-start p-[10px] gap-[10px]">
-            <img src="/assets/img6.png" className='productimg12 w-[60px] h-[70px]' alt="" />
-            <img src="/assets/img6.png" className='productimg12 w-[60px] h-[70px]' alt="" />
-            <img src="/assets/img6.png" className='productimg12 w-[60px] h-[70px]' alt="" />
+            <div className='productimg12 relative w-[60px] h-[70px]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
+            <div className='productimg12 relative w-[60px] h-[70px]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
+            <div className='productimg12 relative w-[60px] h-[70px]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
           </div>
         </div>
         <div className='productinfo flex flex-col gap-[20px]'>

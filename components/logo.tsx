@@ -11,7 +11,7 @@ export const Logo = () => {
   return (
     <Link href="/">
       <div className="hover:opacity-75 transition items-center gap-x-2 flex">
-        <Image src="/logo.png" alt="Logo" height={30} width={30} />
+        <Image src="/logo.png" alt="Logo" height={30} width={30} fill={true}/>
         <p
           className={cn(
             "text-lg text-neutral-700 pb-1 mt-2",

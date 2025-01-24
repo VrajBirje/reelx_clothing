@@ -1,7 +1,7 @@
-import { auth,clerkClient } from "@clerk/nextjs";
-import { ReactNode } from "react";
+// app/(protected)/layout.tsx
+import { auth, clerkClient } from "@clerk/nextjs";
+import ProtectedLayoutClient from "./protectedLayoutClient";
 import { redirect } from "next/navigation";
-import { UserDataProvider } from "@/components/providers/user-data-provider";
 
 export default async function ProtectedLayout({
   children,
@@ -14,23 +14,14 @@ export default async function ProtectedLayout({
     redirect("/sign-in");
   }
 
-  let userData = null;
+  const user = await clerkClient.users.getUser(userId);
+  const userData = {
+    firstName: user.firstName || "", // Fallback to an empty string if null
+    lastName: user.lastName || "",  // Fallback to an empty string if null
+    email: user.emailAddresses[0]?.emailAddress || "",
+    phone: user.phoneNumbers[0]?.phoneNumber || null,
+    id: user.id,
+  };
 
-  if (userId) {
-    const user = await clerkClient.users.getUser(userId);
-    userData = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.emailAddresses[0]?.emailAddress,
-      phone: user.phoneNumbers[0]?.phoneNumber,
-      id: user.id
-    };
-  }
-
-  return (
-    <div className="min-h-screen">
-      {userData && <UserDataProvider userData={userData} />}
-      <main className="protectlayout pt-24 pb-10">{children}</main>
-    </div>
-  );
+  return <ProtectedLayoutClient userData={userData}>{children}</ProtectedLayoutClient>;
 }

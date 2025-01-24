@@ -1,4 +1,5 @@
 import { Heart } from 'lucide-react';
+import Image from 'next/image';
 import React from 'react'
 
 interface CardBoxProps {
@@ -19,7 +20,9 @@ const CardBox: React.FC<CardBoxProps> = ({
     return (
         <div className='cardbox flex flex-col items-center justify-center gap-0 border-gray-300 relative'>
             <div className='cardtag absolute top-0 right-0 text-xs py-[2px] px-[5px] font-medium text-white bg-black'>{tag}</div>
-            <img src={image} className='cardimg w-[20vw] object-contain' alt="" />
+            <div className='cardimg w-[21vw] object-contain relative'>
+                <Image src={image} className='absolute'  alt="" fill={true} />
+            </div>
             <div className='w-full py-1.5 px-3 gap-2 flex flex-col justify-center'>
                 <div className="flex flex w-[100%] gap-1">
                     <p className='text-md w-full text-left font-[600] truncate-text'>{name}</p>

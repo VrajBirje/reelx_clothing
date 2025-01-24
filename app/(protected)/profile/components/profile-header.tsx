@@ -4,11 +4,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { useUser } from "@clerk/nextjs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from 'next/image';
 
 const ProfileHeader = () => {
   const [time, setTime] = useState(new Date());
   const { user, isLoaded } = useUser();
-  
+
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
@@ -27,10 +28,10 @@ const ProfileHeader = () => {
   }, [userData.firstName, userData.lastName]);
 
   const formattedTime = useMemo(() => {
-    return time.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      second: '2-digit' 
+    return time.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
     });
   }, [time]);
 
@@ -52,22 +53,27 @@ const ProfileHeader = () => {
     <Card className="w-full max-w-sm mx-auto border-none">
       <CardContent className="flex items-center space-x-4 p-4">
         {userData.imageUrl ? (
-          <img
-            src={userData.imageUrl}
-            alt="Profile"
-            className="h-12 w-12 rounded-full object-cover"
-            loading="eager"
-          />
+          <div
+            className="h-12 w-12 rounded-full object-cover relative"
+          >
+            <Image
+              src={userData.imageUrl}
+              alt="Profile"
+              className='absolute'
+              loading="eager"
+              fill={true}
+            />
+          </div>
         ) : (
           <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium">
             {initials}
           </div>
         )}
-        
+
         <div className="flex flex-col">
           <h2 className="font-medium">
-            {userData.firstName || userData.lastName ? 
-              `${userData.firstName} ${userData.lastName}`.trim() : 
+            {userData.firstName || userData.lastName ?
+              `${userData.firstName} ${userData.lastName}`.trim() :
               'Guest User'}
           </h2>
           <time className="text-sm text-muted-foreground">

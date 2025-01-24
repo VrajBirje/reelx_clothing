@@ -14,8 +14,14 @@ const page = () => {
       </div>
       <div className="wishcards gap-2 w-full flex flex-wrap justify-between">
         {prod.map((item) => (
-          <div className='wishcard'>
-            <CardBox />
+          <div className='wishcard' key={item}>
+            <CardBox
+              name="Gym Reelx Fit T-shirt"
+              price={1299}
+              discountedPrice={999}
+              image="/assets/img5.png"
+              tag="Hot Deal"
+            />
           </div>
         ))}
       </div>

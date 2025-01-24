@@ -1,3 +1,5 @@
+"use client"
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 const images = [
@@ -33,10 +35,11 @@ const Carousel = () => {
     <div className="relative w-full max-w-full h-100">
       {/* Carousel Image */}
       <div className="homecarousel w-full h-[88vh] overflow-hidden">
-        <img
+        <Image
           src={images[currentSlide]}
           alt={`Slide ${currentSlide + 1}`}
           className="w-full h-full object-cover"
+          fill={true}
         />
       </div>
 

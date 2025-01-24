@@ -3,6 +3,7 @@ import { Heart, ShoppingBag, Trash2, X } from 'lucide-react'
 import React, { useState, useEffect } from 'react'
 import "./cart.css"
 import axios from "axios";
+import Image from 'next/image';
 
 interface UserData {
   firstName: string;
@@ -191,9 +192,11 @@ const Page = () => {
       <div className='cartlr w-full flex justify-between items-start'>
         <div className='cartleft products w-[60%] border border-black'>
           {products.map(product => (
-            <div className='w-full relative'>
-              <div key={product.id} className="product flex items-center p-[16px] gap-[20px]">
-                <img src={product.img} className='h-[150px] w-[100px]' alt={product.name} />
+            <div className='w-full relative' key={product.id} >
+              <div className="product flex items-center p-[16px] gap-[20px]">
+                <div className='h-[150px] w-[100px]'>
+                  <Image src={product.img} alt={product.name} fill={true} />
+                </div>
                 <div className='flex h-[150px] flex-col justify-between gap-2 w-full'>
                   <div className='w-full flex flex-col gap-2 justify-start'>
                     <div className='w-full flex items-center justify-between '>

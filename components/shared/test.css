@@ -67,12 +67,15 @@
     }
 
     .cardimg {
-        height: 26vh;
+        width: 100%;
+        aspect-ratio: 2/2.5;
+        object-fit: cover;
     }
 
     .cardtag {
         top: 0;
         bottom: auto;
+        z-index: 44;
     }
 
     .cardamount {
@@ -130,5 +133,11 @@
     }
     .cardbox{
         border: 0.5px solid rgba(128, 128, 128, 0.182);
+    }
+    .cardimg{
+        aspect-ratio: 2/2.5;
+    }
+    .cardtag{
+        z-index: 44;
     }
 }

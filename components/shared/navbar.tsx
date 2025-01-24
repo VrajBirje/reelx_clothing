@@ -8,9 +8,10 @@ import { Heart } from 'lucide-react';
 import { ShoppingCart } from 'lucide-react';
 import { Sidebar } from './sidebar/Sidebar';
 import "./test.css"
+import Image from 'next/image';
 
 
-export const Navbar = async () => {
+export const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const navbar = document.getElementById("navbar");
@@ -31,6 +32,7 @@ export const Navbar = async () => {
     <nav
       id="navbar"
       className="nav px-10 w-full h-16 border-b shadow-sm bg-white flex items-center justify-between transition-all duration-300 ease-in-out"
+      style={{ zIndex: "999" }}
     >
       <div className="nav1 flex justify-start items-center gap-5 w-[15vw]">
         <Link href='/shop'><p className='text-sm'>Shop</p></Link>
@@ -42,9 +44,11 @@ export const Navbar = async () => {
       {/* center section */}
       <div className='flex items-center justify-center gap-3' >
         {/* <Menu size={26} strokeWidth={1.5} className='navmenu mr-2' /> */}
-        <Sidebar/>
+        <Sidebar />
         <Link href='/' className='navlogo flex items-center justify-center gap-3'>
-          <img src="./logo.png" alt="" className='navlogo2 h-11' />
+          <div className='navlogo2 h-11 aspect-[3/2] relative'>
+            <Image src="/logo.png" alt="" className='absolute' fill={true} />
+          </div>
           <p className='navlogo1 text-3xl font-medium'>Reelx.</p>
         </Link>
       </div>
@@ -52,9 +56,9 @@ export const Navbar = async () => {
       {/* left section  */}
       <div className='navleft flex items-center justify-end gap-6'>
         <Search className='navlogo3' strokeWidth={1.5} />
-        <Link className='navpro' href='/profile'><User size={26} strokeWidth={1.5}/></Link>
-        <Link href='/wishlist'><Heart size={26} strokeWidth={1.5}/></Link>
-        <Link href='/cart'><ShoppingCart size={26} strokeWidth={1.5}/></Link>
+        <Link className='navpro' href='/profile'><User size={26} strokeWidth={1.5} /></Link>
+        <Link href='/wishlist'><Heart size={26} strokeWidth={1.5} /></Link>
+        <Link href='/cart'><ShoppingCart size={26} strokeWidth={1.5} /></Link>
       </div>
     </nav>
   );

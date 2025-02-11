@@ -31,7 +31,6 @@ const HomePage = () => {
           ))}
         </div>
       </div>
-      <CurvedCarousel/>
       <Trending />
       <Trending />
 

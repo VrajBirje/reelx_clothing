@@ -126,27 +126,6 @@ const Page = () => {
 
     console.log(order);
     console.log(key);
-    // const options = {
-    //   key: key, // Enter the Key ID generated from the Dashboard
-    //   amount: data.total_amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    //   currency: "INR",
-    //   name: "Reelx",
-    //   description: "Test Transaction",
-    //   image:"https://upload.wikimedia.org/wikipedia/commons/f/f9/Wikimedia_Brand_Guidelines_Update_2022_Wikimedia_Logo_Brandmark.png",
-    //   order_id: data.order_id, // This is a sample Order ID. Pass the id obtained in the response of Step 1
-    //   callback_url: "http://localhost:5000/api/orders/verify",
-    //   prefill: {
-    //     name: userData?.firstName,
-    //     email: userData?.email,
-    //     contact: userData?.phone,
-    //   },
-    //   notes: {
-    //     address: "Razorpay Corporate Office",
-    //   },
-    //   theme: {
-    //     color: "#000000",
-    //   },
-    // };
     var options = {
       key: key, // Enter the Key ID generated from the Dashboard
       amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -194,8 +173,8 @@ const Page = () => {
           {products.map(product => (
             <div className='w-full relative' key={product.id} >
               <div className="product flex items-center p-[16px] gap-[20px]">
-                <div className='h-[150px] w-[100px]'>
-                  <Image src={product.img} alt={product.name} fill={true} />
+                <div className='asp w-[100px] relative'>
+                  <Image className='absolute w-[100%] h-[100%]' src={product.img} alt={product.name} fill={true} />
                 </div>
                 <div className='flex h-[150px] flex-col justify-between gap-2 w-full'>
                   <div className='w-full flex flex-col gap-2 justify-start'>

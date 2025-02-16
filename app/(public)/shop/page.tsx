@@ -1,451 +1,140 @@
-// "use client";
-// import React, { useEffect, useRef, useState } from "react";
-// import { Checkbox } from "@/components/ui/checkbox";
-// import CardBox from "@/components/shared/card";
-// import './page.css'
-
-// const category = ["Gym", "Minimal", "Plain", "Football"];
-// const size = ["S", "M", "L", "XL"];
-// const color = ["Black", "Grey", "Biege", "White"];
-// const productList = [
-//   {
-//     id: 1,
-//     name: "Gym T-Shirt",
-//     price: 2099,
-//     discountedPrice: 2599,
-//     category: "Gym",
-//     color: "Black",
-//     size: "M",
-//     tag: "Hot Deal",
-//     image: "/images/gym-shirt.jpg",
-//   },
-//   {
-//     id: 2,
-//     name: "Minimal Hoodie",
-//     price: 4990,
-//     discountedPrice: 2599,
-//     category: "Minimal",
-//     color: "Grey",
-//     size: "L",
-//     tag: "Hot Deal",
-//     image: "/images/minimal-hoodie.jpg",
-//   },
-//   {
-//     id: 3,
-//     name: "Plain White Tee",
-//     price: 1599,
-//     discountedPrice: 2599,
-//     category: "Plain",
-//     color: "White",
-//     size: "S",
-//     tag: "Hot Deal",
-//     image: "/images/plain-tee.jpg",
-//   },
-//   {
-//     id: 4,
-//     name: "Football Jersey",
-//     price: 2599,
-//     discountedPrice: 2599,
-//     category: "Football",
-//     color: "Beige",
-//     size: "XL",
-//     tag: "Hot Deal",
-//     image: "/images/football-jersey.jpg",
-//   },
-//   {
-//     id: 5,
-//     name: "Football Jersey",
-//     price: 3999,
-//     category: "Football",
-//     color: "Beige",
-//     size: "XL",
-//     tag: "Hot Deal",
-//     image: "/images/football-jersey.jpg",
-//   },
-//   {
-//     id: 6,
-//     name: "Football Jersey",
-//     price: 3999,
-//     category: "Football",
-//     color: "Beige",
-//     size: "XL",
-//     tag: "Hot Deal",
-//     image: "/images/football-jersey.jpg",
-//   },
-//   {
-//     id: 7,
-//     name: "Football Jersey",
-//     price: 3999,
-//     category: "Football",
-//     color: "Beige",
-//     size: "XL",
-//     tag: "Hot Deal",
-//     image: "/images/football-jersey.jpg",
-//   },
-//   {
-//     id: 8,
-//     name: "Football Jersey",
-//     price: 3999,
-//     category: "Football",
-//     color: "Beige",
-//     size: "XL",
-//     tag: "Hot Deal",
-//     image: "/images/football-jersey.jpg",
-//   },
-//   {
-//     id: 9,
-//     name: "Football Jersey",
-//     price: 3999,
-//     category: "Football",
-//     color: "Beige",
-//     size: "XL",
-//     tag: "Hot Deal",
-//     image: "/images/football-jersey.jpg",
-//   },
-//   {
-//     id: 10,
-//     name: "Football Jersey",
-//     price: 3999,
-//     category: "Football",
-//     color: "Beige",
-//     size: "XL",
-//     tag: "Hot Deal",
-//     image: "/images/football-jersey.jpg",
-//   },
-//   {
-//     id: 11,
-//     name: "Football Jersey",
-//     price: 3999,
-//     category: "Football",
-//     color: "Beige",
-//     size: "XL",
-//     tag: "Hot Deal",
-//     image: "/images/football-jersey.jpg",
-//   },
-//   {
-//     id: 12,
-//     name: "Football Jersey",
-//     price: 3999,
-//     category: "Football",
-//     color: "Beige",
-//     size: "XL",
-//     tag: "Hot Deal",
-//     image: "/images/football-jersey.jpg",
-//   },
-//   // Add more products as needed
-// ];
-
-// const Page = () => {
-//   const [isScrollable, setIsScrollable] = useState(true);
-
-//   const announcementRef = useRef<HTMLDivElement>(null);
-//   const footerRef = useRef<HTMLDivElement>(null);
-//   const rightSectionRef = useRef<HTMLDivElement>(null);
-
-//   useEffect(() => {
-//     const observerCallback = (entries: IntersectionObserverEntry[]) => {
-//       entries.forEach((entry) => {
-//         if (
-//           entry.target === announcementRef.current ||
-//           entry.target === footerRef.current
-//         ) {
-//           setIsScrollable(!entry.isIntersecting);
-//         }
-//       });
-//     };
-
-//     const observer = new IntersectionObserver(observerCallback, {
-//       threshold: 0.1,
-//     });
-
-//     if (announcementRef.current) observer.observe(announcementRef.current);
-//     if (footerRef.current) observer.observe(footerRef.current);
-
-//     return () => {
-//       if (announcementRef.current) observer.unobserve(announcementRef.current);
-//       if (footerRef.current) observer.unobserve(footerRef.current);
-//     };
-//   }, []);
-
-//   return (
-//     <div className="shop flex flex-col bg-white px-[4%] w-full">
-//       <div ref={announcementRef} className="z-50">
-//         <div
-//           className="h-[1px] w-full"
-//         >
-//         </div>
-//       </div>
-
-//       <div className="flex flex-1">
-
-//         <div className="shopleft w-[15%] flex flex-col gap-[20px] p-4 sticky top-0">
-
-//           <div className="flex flex-col">
-//             <p className="text-xs font-bold mb-2">Category</p>
-//             {category.map((cat) => (
-//               <div
-//                 key={cat}
-//                 className="flex items-center justify-start gap-2 text-sm font-regular text-gray-600"
-//               >
-//                 <Checkbox style={{ height: "15px", width: "15px" }} id={cat} />
-//                 <label htmlFor={cat}>{cat}</label>
-//               </div>
-//             ))}
-//           </div>
-//           <div className="h-[1px] w-full bg-gray-400"></div>
-
-
-//           <div className="flex flex-col">
-//             <p className="text-xs font-semibold mb-2">Size</p>
-//             {size.map((s) => (
-//               <div
-//                 key={s}
-//                 className="flex items-center justify-start gap-2 text-sm font-regular text-gray-600"
-//               >
-//                 <Checkbox style={{ height: "15px", width: "15px" }} id={s} />
-//                 <label htmlFor={s}>{s}</label>
-//               </div>
-//             ))}
-//           </div>
-//           <div className="h-[0.5px] w-full bg-gray-400"></div>
-
-
-//           <div className="flex flex-col">
-//             <p className="text-xs font-bold mb-2">Color</p>
-//             {color.map((col) => (
-//               <div
-//                 key={col}
-//                 className="flex items-center justify-start gap-2 text-sm font-regular text-gray-600"
-//               >
-//                 <Checkbox style={{ height: "15px", width: "15px" }} id={col} />
-//                 <label htmlFor={col}>{col}</label>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-
-
-//         <div
-//           ref={rightSectionRef}
-//           className={`shopright w-[85%] flex flex-col justify-start ${isScrollable ? "overflow-y-auto" : "overflow-hidden"
-//             } no-scrollbar`}
-//         >
-//           <div className="w-full flex justify-between my-4">
-//             <p className="text-xl "></p>
-//             <select className="text-sm border border-black py-1 flex items-center justify-center gap-2 px-4">
-//               <option value="Best">Best for You</option>
-//               <option value="Best">Best Selling</option>
-//               <option value="pricel">Price (low to high)</option>
-//               <option value="priceh">Price (high to low)</option>
-//             </select>
-//           </div>
-//           <div className="w-full flex flex-wrap justify-between gap-4">
-//             {productList.map((product) => (
-//               <div key={product.id} className="shopcardbox">
-//                 <CardBox
-//                   name={product.name}
-//                   price={product.price}
-//                   discountedPrice={product.discountedPrice}
-//                   image="/assets/img4.png"
-//                   tag={product.tag}
-//                 />
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//       <footer
-//         ref={footerRef}
-//         className="w-full h-[1px] bg-gray-200 flex items-center justify-center"
-//       >
-//       </footer>
-//     </div>
-//   );
-// };
-
-// export default Page;
 "use client";
-import React from "react";
-import { Checkbox } from "@/components/ui/checkbox";
+import React, { useEffect, useState } from "react";
 import CardBox from "@/components/shared/card";
-import './page.css'
+import "./page.css";
 
-const category = ["Gym", "Minimal", "Plain", "Football"];
-const size = ["S", "M", "L", "XL"];
-const color = ["Black", "Grey", "Biege", "White"];
-const productList = [
-  {
-    id: 1,
-    name: "Gym T-Shirt",
-    price: 2099,
-    discountedPrice: 2599,
-    category: "Gym",
-    color: "Black",
-    size: "M",
-    tag: "Hot Deal",
-    image: "/images/gym-shirt.jpg",
-  },
-  {
-    id: 2,
-    name: "Minimal Hoodie",
-    price: 4990,
-    discountedPrice: 2599,
-    category: "Minimal",
-    color: "Grey",
-    size: "L",
-    tag: "Hot Deal",
-    image: "/images/minimal-hoodie.jpg",
-  },
-  {
-    id: 3,
-    name: "Plain White Tee",
-    price: 1599,
-    discountedPrice: 2599,
-    category: "Plain",
-    color: "White",
-    size: "S",
-    tag: "Hot Deal",
-    image: "/images/plain-tee.jpg",
-  },
-  {
-    id: 4,
-    name: "Football Jersey",
-    price: 2599,
-    discountedPrice: 2599,
-    category: "Football",
-    color: "Beige",
-    size: "XL",
-    tag: "Hot Deal",
-    image: "/images/football-jersey.jpg",
-  },
-  {
-    id: 5,
-    name: "Football Jersey",
-    price: 3999,
-    discountedPrice: 2599,
-    category: "Football",
-    color: "Beige",
-    size: "XL",
-    tag: "Hot Deal",
-    image: "/images/football-jersey.jpg",
-  },
-  {
-    id: 6,
-    name: "Football Jersey",
-    price: 3999,
-    discountedPrice: 2599,
-    category: "Football",
-    color: "Beige",
-    size: "XL",
-    tag: "Hot Deal",
-    image: "/images/football-jersey.jpg",
-  },
-  {
-    id: 7,
-    name: "Football Jersey",
-    price: 3999,
-    discountedPrice: 2599,
-    category: "Football",
-    color: "Beige",
-    size: "XL",
-    tag: "Hot Deal",
-    image: "/images/football-jersey.jpg",
-  },
-  {
-    id: 8,
-    name: "Football Jersey",
-    price: 3999,
-    discountedPrice: 2599,
-    category: "Football",
-    color: "Beige",
-    size: "XL",
-    tag: "Hot Deal",
-    image: "/images/football-jersey.jpg",
-  },
-  {
-    id: 9,
-    name: "Football Jersey",
-    price: 3999,
-    discountedPrice: 2599,
-    category: "Football",
-    color: "Beige",
-    size: "XL",
-    tag: "Hot Deal",
-    image: "/images/football-jersey.jpg",
-  },
-  {
-    id: 10,
-    name: "Football Jersey",
-    price: 3999,
-    discountedPrice: 2599,
-    category: "Football",
-    color: "Beige",
-    size: "XL",
-    tag: "Hot Deal",
-    image: "/images/football-jersey.jpg",
-  },
-  {
-    id: 11,
-    name: "Football Jersey",
-    price: 3999,
-    discountedPrice: 2599,
-    category: "Football",
-    color: "Beige",
-    size: "XL",
-    tag: "Hot Deal",
-    image: "/images/football-jersey.jpg",
-  },
-  {
-    id: 12,
-    name: "Football Jersey",
-    price: 3999,
-    discountedPrice: 2599,
-    category: "Football",
-    color: "Beige",
-    size: "XL",
-    tag: "Hot Deal",
-    image: "/images/football-jersey.jpg",
-  },
-  // Add more products as needed
-];
+interface Product {
+  product_id: number;
+  name: string;
+  price: number;
+  discountedprice: number;
+  category: string;
+  color: string;
+  size: string;
+  tag: string;
+  images: string[];
+}
 
-const Page = () => {
+const Page: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const limit: number = 12; // Default limit
+  const [sortBy, setSortBy] = useState<string>("desc"); // Default sorting
+  const [category, setCategory] = useState<string>(""); // Default category
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false); // Loading state
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+
+        const queryParams = new URLSearchParams({
+          page: page.toString(),
+          limit: limit.toString(),
+          ...(sortBy ? { sort: sortBy } : {}),
+          ...(category ? { category_id: category } : {}),
+        });
+
+        console.log("Fetching Products:", queryParams.toString());
+
+        const response = await fetch(`http://localhost:5000/api/products/products/paginated2?${queryParams}`);
+        const data = await response.json();
+
+        console.log("API Response:", data);
+
+        if (data.success) {
+          setProducts(data.data.products || []);
+          setTotalPages(data.totalPages || Math.ceil((data.data.total || 1) / limit));
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [page, sortBy, category]); // Fetch data on any change
+
 
   return (
     <div className="shop flex flex-col bg-white px-[4%] w-full">
-      {/* <div className="flex flex-1"> */}
-      <div
-        className={`shopright w-[100%] flex flex-col justify-start`}
-      >
+      <div className="shopright w-[100%] flex flex-col justify-start">
+        {/* Filters */}
         <div className="w-full flex justify-between my-4">
-          <select className="text-sm border border-black w-[200px] py-2 flex items-center justify-center gap-2 px-4">
-            <option value="Best">All</option>
-            <option value="Best">Minimals</option>
-            <option value="pricel">Street Wear</option>
-            <option value="priceh">Combos</option>
+          {/* Category Filter */}
+          <select
+            className="text-sm border border-black w-[200px] py-2 px-4"
+            value={category}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              setPage(1); // Reset to page 1 when category changes
+            }}
+          >
+            <option value="">All Categories</option>
+            <option value="1">Minimals</option>
+            <option value="1">Street Wear</option>
+            <option value="2">Combos</option>
           </select>
-          <select className="text-sm border w-[200px] border-white text-white bg-black py-1 flex items-center justify-center gap-2 px-4">
-            <option value="Best">Best for You</option>
-            <option value="Best">Best Selling</option>
-            <option value="pricel">Price (low to high)</option>
-            <option value="priceh">Price (high to low)</option>
+
+          {/* Sorting Filter */}
+          <select
+            className="text-sm border w-[200px] border-white text-white bg-black py-1 px-4"
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setPage(1); // Reset to page 1 when sorting changes
+            }}
+          >
+            <option value="desc">Price (High to Low)</option>
+            <option value="asc">Price (Low to High)</option>
           </select>
         </div>
+
+        {/* Products Grid */}
         <div className="w-full flex flex-wrap justify-between gap-4">
-          {productList.map((product) => (
-            <div key={product.id} className="shopcardbox">
-              <CardBox
-                name={product.name}
-                price={product.price}
-                discountedPrice={product.discountedPrice}
-                image="/assets/img4.png"
-                tag={product.tag}
-              />
-            </div>
-          ))}
+          {loading ? (
+            <p className="text-center text-gray-500">Loading products...</p>
+          ) : products.length > 0 ? (
+            products.map((product) => (
+              <div key={product.product_id} className="shopcardbox">
+                <CardBox
+                  product_id={product.product_id}
+                  name={product.name}
+                  price={product.discountedprice}
+                  discountedPrice={product.price}
+                  image={product.images?.[0] || "/assets/img4.png"}
+                  tag={product.tag}
+                />
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No products found.</p>
+          )}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="w-full flex justify-center my-6 gap-4">
+          <button
+            className="bg-gray-300 px-4 py-2 rounded-md"
+            disabled={page <= 1}
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          >
+            Previous
+          </button>
+          <span className="text-lg font-semibold">
+            {page} / {totalPages}
+          </span>
+          <button
+            className="bg-gray-300 px-4 py-2 rounded-md"
+            disabled={page >= totalPages}
+            onClick={() => setPage((prev) => prev + 1)} // Fixed next button
+          >
+            Next
+          </button>
         </div>
       </div>
-      {/* </div> */}
     </div>
   );
 };

@@ -22,7 +22,7 @@
 }
 @media (min-width: 768px) {
     .productimg1{
-        height: 80vh;
+        aspect-ratio: 2/2.5;
         width: 50%;
     }
     .productimgbox2{

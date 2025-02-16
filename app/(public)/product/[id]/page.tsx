@@ -1,41 +1,93 @@
+"use client";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { Heart, Ruler, Share2, ShoppingBag } from 'lucide-react'
 import React from 'react'
-import "./product.css"
+import "../../product/product.css"
 import Image from "next/image"
 
+interface RawTshirt {
+  id: number;
+  quantity: number;
+  size: string;
+}
+
+interface Product {
+  product_id: number;
+  name: string;
+  description: string;
+  price: number;
+  discountedprice: number;
+  discount: number;
+  category_id: number;
+  tag: string;
+  images: string[];
+  date_added: string;
+  date_updated: string;
+  raw_tshirt_ids: RawTshirt[];
+  color: string;
+}
+
 const page = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const data = await response.json();
+        if (data.success) {
+          setProduct(data.data);
+          console.log(product)
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  if (loading) return <p>Loading...</p>;
+  if (!product) return <p>Product not found</p>;
   return (
     <div className='productmain flex py-[20px] justify-center bg-white px-[4%] w-full flex-col items-center gap-[10px] '>
-      <p className='text-xs font-medium'>Home / Shop / Gym-Wear / <b>Printed Oversized T-Shirt</b></p>
+      <p className='text-xs font-medium'>Home / Shop / Gym-Wear / <b>{product.name}</b></p>
       <div className='productmain2 w-full flex items-start justify-center mt-[20px] gap-[20px]'>
         <div className='productimgbox w-[68%] flex flex-wrap overflow-y-auto'>
-          <div className='productimg1 relative w-[50%]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
-          <div className='productimg1 relative w-[50%]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
-          <div className='productimg1 relative w-[50%]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
+          <div className='productimg1 relative w-[50%]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
+          <div className='productimg1 relative w-[50%]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
+          <div className='productimg1 relative w-[50%]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
         </div>
         <div className='productimgbox2 w-[100%] flex flex-col '>
           <div className='productimg1 relative h-[50vh] w-[100%]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
           <div className="flex w-[100%] items-center justify-start p-[10px] gap-[10px]">
-            <div className='productimg12 relative w-[60px] h-[70px]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
-            <div className='productimg12 relative w-[60px] h-[70px]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
-            <div className='productimg12 relative w-[60px] h-[70px]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
+            <div className='productimg12 relative w-[60px] h-[70px]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
+            <div className='productimg12 relative w-[60px] h-[70px]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
+            <div className='productimg12 relative w-[60px] h-[70px]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
           </div>
         </div>
         <div className='productinfo flex flex-col gap-[20px]'>
           <div className='w-full flex items-center justify-between'>
-            <p className='text-md font-semibold'>Printed Gym Relax-Fit T-Shirt</p>
+            <p className='text-md font-semibold'>{product.name}</p>
             <Heart />
           </div>
           <div className='flex flex-col items-start jusify-center gap-[5px]'>
             <div className="prices w-full flex items-center justify-start gap-[20px]">
-              <p className='text-2xl text-black font-semibold'>Rs. 599.00</p>
-              <p className='text-md line-through text-gray-400 font-regular'>Rs. 899.00</p>
+              <p className='text-2xl text-black font-semibold'>Rs. {product.discountedprice}</p>
+              <p className='text-md line-through text-gray-400 font-regular'>Rs. {product.price}.00</p>
               <p className='text-xs font-semibold py-[3px] px-[5px] bg-black text-white '>30% OFF</p>
             </div>
             <p className='text-xs font-semibold text-gray-500'>Free Shipping over ₹999</p>

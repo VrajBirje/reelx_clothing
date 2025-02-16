@@ -6,8 +6,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/Footer";
 import { Announcement } from "@/components/shared/announcement";
-import { Toaster } from 'sonner';
+// import { Toaster } from 'sonner';
 import Script from "next/script";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,7 +34,7 @@ export default function RootLayout({
             <Navbar />
           </div>
           <main className="flex-1">{children}
-            <Toaster />
+            <Toaster position="top-center" />
           </main>
           <Footer />
         </body>

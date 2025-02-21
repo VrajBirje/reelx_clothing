@@ -104,7 +104,7 @@ const Page = () => {
 
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`);
         const data = await response.json();
         if (data.success) {
           setProduct(data.data);

@@ -27,6 +27,12 @@ interface CartItem {
   isWishlisted?: boolean; // New field to track wishlist status
 }
 
+interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
 const Page = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -169,7 +175,6 @@ const Page = () => {
     }
   };
 
-
   const shipping = 99.0;
   const discount = 199.0;
 
@@ -179,6 +184,85 @@ const Page = () => {
   // Calculate final amount
   const finalAmount = productTotal + shipping - discount;
 
+  // Razorpay Payment Handler
+  const initiateRazorpayPayment = async (finalAmount: number) => {
+    try {
+      // Call your backend to create a Razorpay order
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment/create-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: finalAmount,
+          currency: 'INR',
+          receipt: `order_${Date.now()}`, // Unique receipt ID
+        }),
+      });
+
+      const order = await response.json();
+
+      if (!order.id) {
+        throw new Error('Failed to create Razorpay order');
+      }
+
+      // Razorpay options
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your Razorpay Key ID
+        amount: order.amount, // Amount in paise
+        currency: order.currency,
+        order_id: order.id, // Razorpay order ID
+        name: 'Your Company Name',
+        description: 'Payment for your order',
+        handler: async function (response: RazorpayResponse) {
+          // Handle payment success
+          console.log('Payment successful!', response);
+
+          // Verify payment on your backend
+          const verificationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment/verify-payment`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+            }),
+          });
+
+          const verificationData = await verificationResponse.json();
+
+          if (verificationData.status === 'success') {
+            toast.success('Payment verified successfully!');
+            // Redirect to a success page or clear the cart
+            handleSuccessfulPayment();
+          } else {
+            toast.error('Payment verification failed!');
+          }
+        },
+        prefill: {
+          name: userData?.firstName + ' ' + userData?.lastName,
+          email: userData?.email || '',
+          contact: userData?.phone || '',
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+
+      // Open Razorpay payment modal
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error('Payment failed:', error);
+      toast.error('Payment failed. Please try again.');
+    }
+  };
+
+  const handleSuccessfulPayment = () =>{
+    return;
+  }
   return (
     <div className="cart flex py-[20px] justify-center bg-white 2xl:max-w-screen-xl mx-auto w-full flex-col items-center gap-[30px]">
       <div className="carttopmobile w-full flex justify-between items-center gap-2 p-2 border-b-[1px] border-gray">
@@ -186,7 +270,10 @@ const Page = () => {
           <p className="text-xs font-light">Total :</p>
           <p className="text-l font-bold">₹ {finalAmount}/-</p>
         </div>
-        <button className="w-full text-sm font-semibold border border-black bg-black flex items-center justify-center text-white py-2 gap-3">
+        <button
+          className="w-full text-sm font-semibold border border-black bg-black flex items-center justify-center text-white py-2 gap-3"
+          onClick={() => initiateRazorpayPayment(finalAmount)}
+        >
           CHECKOUT
         </button>
       </div>
@@ -303,6 +390,12 @@ const Page = () => {
               <p>Total</p>
               <p>₹ {finalAmount}</p>
             </div>
+            <button
+              className='w-full border text-md border-black flex items-center justify-center bg-black text-white py-2 gap-3'
+              onClick={() => initiateRazorpayPayment(finalAmount)}
+            >
+              <ShoppingBag /> <p>Checkout</p>
+            </button>
           </div>
         </div>
       </div>

@@ -26,7 +26,12 @@ export default function RootLayout({
 
   return (
     <ClerkProvider>
-      <Script src="https://checkout.razorpay.com/v1/checkout.js"/>
+      {/* <Script src="https://checkout.razorpay.com/v1/checkout.js"/> */}
+      <Script
+        id="razorpay-checkout-js"
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="lazyOnload"
+      />
       <html lang="en">
         <body className={`${inter.className} min-h-screen flex flex-col`}>
           <div className="flex flex-col z-50 top-0 fixed w-full">

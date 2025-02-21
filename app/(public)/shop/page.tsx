@@ -38,7 +38,7 @@ const Page: React.FC = () => {
 
         console.log("Fetching Products:", queryParams.toString());
 
-        const response = await fetch(`http://localhost:5000/api/products/products/paginated2?${queryParams}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/products/paginated2?${queryParams}`);
         const data = await response.json();
 
         console.log("API Response:", data);

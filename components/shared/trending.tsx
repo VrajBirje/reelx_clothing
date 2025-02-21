@@ -10,6 +10,7 @@ const Trending = () => {
             </div>
             <div className='trend flex w-full justify-between'>
                 <CardBox
+                    product_id={1}
                     name="Gym Reelx Fit T-shirt"
                     price={1299}
                     discountedPrice={999}
@@ -17,6 +18,7 @@ const Trending = () => {
                     tag="Hot Deal"
                 />
                 <CardBox
+                    product_id={1}
                     name="Gym Reelx Fit T-shirt"
                     price={1299}
                     discountedPrice={999}
@@ -24,6 +26,7 @@ const Trending = () => {
                     tag="Hot Deal"
                 />
                 <CardBox
+                    product_id={1}
                     name="Gym Reelx Fit T-shirt"
                     price={1299}
                     discountedPrice={999}
@@ -31,6 +34,7 @@ const Trending = () => {
                     tag="Hot Deal"
                 />
                 <CardBox
+                    product_id={1}
                     name="Gym Reelx Fit T-shirt"
                     price={1299}
                     discountedPrice={999}

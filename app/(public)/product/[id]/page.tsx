@@ -104,7 +104,7 @@ const Page = () => {
 
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`);
         const data = await response.json();
         if (data.success) {
           setProduct(data.data);
@@ -146,7 +146,7 @@ const Page = () => {
     const customer_id = user.id; // Replace with actual Clerk ID
 
     try {
-      const response = await fetch("http://localhost:5000/api/cart/add", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

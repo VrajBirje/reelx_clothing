@@ -116,7 +116,7 @@ const Page = () => {
     setLoadingStates((prev) => ({ ...prev, [product_id]: true }));
 
     try {
-      const response = await axios.put("http://localhost:5000/api/cart/cart/update", {
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/cart/cart/update`, {
         customer_id: userData.id,
         product_id,
         size,
@@ -146,7 +146,7 @@ const Page = () => {
     setLoadingStates((prev) => ({ ...prev, [deleteModal.product_id!]: true }));
 
     try {
-      const response = await axios.delete("http://localhost:5000/api/cart/cart/remove", {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/cart/cart/remove`, {
         data: {
           customer_id: userData.id,
           product_id: deleteModal.product_id,

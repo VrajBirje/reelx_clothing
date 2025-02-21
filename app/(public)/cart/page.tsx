@@ -1,9 +1,10 @@
-"use client"
-import { Heart, ShoppingBag, Trash2, X } from 'lucide-react'
-import React, { useState, useEffect } from 'react'
-import "./cart.css"
+"use client";
+import { Heart, ShoppingBag, Trash2, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import "./cart.css";
 import axios from "axios";
-import Image from 'next/image';
+import Image from "next/image";
+import toast from "react-hot-toast";
 
 interface UserData {
   firstName: string;
@@ -13,210 +14,260 @@ interface UserData {
   id: string;
 }
 
-const Page = () => {
-  // Define an array of products
-  const [userData, setUserData] = useState<UserData | null>(null);
+interface CartItem {
+  product_id: number;
+  name: string;
+  color: string;
+  size: string;
+  price: number;
+  discountedprice: number;
+  images: string[];
+  quantity: number;
+  raw_tshirt: { quantity: number }; // Inventory quantity
+  isWishlisted?: boolean; // New field to track wishlist status
+}
 
-  // Use useEffect to ensure localStorage is accessed only on the client
+const Page = () => {
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [wishlist, setWishlist] = useState<{ [key: number]: boolean }>({});
+  const [loadingStates, setLoadingStates] = useState<{ [key: number]: boolean }>({});
+  const [deleteModal, setDeleteModal] = useState<{ show: boolean; product_id: number | null }>({
+    show: false,
+    product_id: null,
+  });
+
   useEffect(() => {
     const storedData = localStorage.getItem("userData");
     if (storedData) {
       const parsedData = JSON.parse(storedData) as UserData;
       setUserData(parsedData);
+      fetchCartItems(parsedData.id);
+      fetchWishlist(parsedData.id);
     }
   }, []);
-  const shipping = 99.00;
-  const discount = 199.00;
-  const products = [
-    {
-      id: 1,
-      name: 'Relax-Fit Gym Oversized T-Shirt',
-      color: 'Black',
-      size: 'L',
-      price: 799.00,
-      img: '/assets/img6.png'
-    },
-    {
-      id: 2,
-      name: 'Relax-Fit Gym Oversized T-Shirt',
-      color: 'Black',
-      size: 'L',
-      price: 799,
-      img: '/assets/img6.png'
-    },
-    // Add more products as needed
-  ];
 
-  // State to manage the quantities of each product
-  const [quantities, setQuantities] = useState<{ [key: number]: number }>({
-    1: 1,
-    2: 1 // Initial quantity for product with id 2
-  });
-
-  const updateQuantity = (id: number, change: number) => {
-    setQuantities(prevQuantities => {
-      const newQuantity = (prevQuantities[id] || 1) + change;
-      return {
-        ...prevQuantities,
-        [id]: newQuantity < 1 ? 1 : newQuantity, // Ensure quantity doesn't go below 1
-      };
-    });
+  // Fetch Cart Items
+  const fetchCartItems = async (userId: string) => {
+    try {
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart/cart/${userId}`);
+      setCartItems(data.data);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
   };
 
-  // Calculate total product price
-  const productTotal = products.reduce(
-    (total, product) => total + product.price * (quantities[product.id] || 1),
-    0
-  );
+  // Fetch Wishlist
+  const fetchWishlist = async (userId: string) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist/wishlist/${userId}`);
+      const data = await res.json();
+
+      if (data.success) {
+        const wishlistState: { [key: number]: boolean } = {};
+        data.products.forEach((p: any) => {
+          wishlistState[p.product_id] = true;
+        });
+        setWishlist(wishlistState);
+      }
+    } catch (error) {
+      console.error("Error fetching wishlist:", error);
+    }
+  };
+
+  // Toggle Wishlist Function
+  const handleWishlistToggle = async (product_id: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!userData) {
+      toast.error("Please sign in to use the wishlist!");
+      return;
+    }
+
+    const isCurrentlyWishlisted = wishlist[product_id] || false;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/wishlist/${isCurrentlyWishlisted ? "remove" : "add"}`;
+    const method = isCurrentlyWishlisted ? "DELETE" : "POST";
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customer_id: userData.id, product_id }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setWishlist((prev) => ({
+          ...prev,
+          [product_id]: !isCurrentlyWishlisted, // Toggle wishlist state
+        }));
+        toast.success(isCurrentlyWishlisted ? "Removed from wishlist!" : "Added to wishlist!");
+      }
+    } catch (error) {
+      console.error("Wishlist update error:", error);
+      toast.error("Failed to update wishlist!");
+    }
+  };
+
+  // Update Cart Quantity API Call
+  const updateCartQuantity = async (product_id: number, size: string, quantity: number) => {
+    if (!userData) return;
+
+    setLoadingStates((prev) => ({ ...prev, [product_id]: true }));
+
+    try {
+      const response = await axios.put("http://localhost:5000/api/cart/cart/update", {
+        customer_id: userData.id,
+        product_id,
+        size,
+        quantity,
+      });
+
+      if (response.data.success) {
+        setCartItems((prev) =>
+          prev.map((item) =>
+            item.product_id === product_id ? { ...item, quantity } : item
+          )
+        );
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating cart quantity:", error);
+      alert("Failed to update quantity");
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [product_id]: false }));
+    }
+  };
+
+  const deleteCartItem = async () => {
+    if (!userData || deleteModal.product_id === null) return;
+
+    setLoadingStates((prev) => ({ ...prev, [deleteModal.product_id!]: true }));
+
+    try {
+      const response = await axios.delete("http://localhost:5000/api/cart/cart/remove", {
+        data: {
+          customer_id: userData.id,
+          product_id: deleteModal.product_id,
+        },
+      });
+
+      if (response.data.success) {
+        setCartItems((prev) =>
+          prev.filter((item) => item.product_id !== deleteModal.product_id)
+        );
+        setDeleteModal({ show: false, product_id: null });
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting cart item:", error);
+      alert("Failed to delete item");
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [deleteModal.product_id!]: false }));
+    }
+  };
+
+
+  const shipping = 99.0;
+  const discount = 199.0;
+
+  // Calculate total price
+  const productTotal = cartItems.reduce((total, product) => total + product.discountedprice * product.quantity, 0);
 
   // Calculate final amount
   const finalAmount = productTotal + shipping - discount;
 
-  // const checkoutHandler = (amount: number) => {
-  //   axios
-  //     .get(`${process.env.BACKEND_URL}/orders/getkey`)
-  //     // .then(({ data: { key } }) => {
-  //     //   return axios.post("http://localhost:5000/api/orders/", {
-  //     //     total_amount: amount,
-  //     //     user_id: 1,
-  //     //     address_id: 1,
-  //     //     payment_method: "card",
-  //     //   }).then(({ data: { order } }) => ({ key, order }));
-  //     // })
-  //     .then(({ data: {key} }) => {
-  //       const options = {
-  //         key: key,
-  //         amount: amount,
-  //         currency: "INR",
-  //         name: "Reelx",
-  //         description: "Test Transaction",
-  //         image: "https://example.com/your_logo",
-  //         order_id: 3, // Use the correct order ID
-  //         callback_url: `${process.env.BACKEND_URL}/orders/verify`,
-  //         prefill: {
-  //           name: userData?.firstName,
-  //           email: userData?.email,
-  //           contact: userData?.phone,
-  //         },
-  //         notes: {
-  //           address: "Razorpay Corporate Office",
-  //         },
-  //         theme: {
-  //           color: "#000000",
-  //         },
-  //       };
-
-  //       const razor = new window.Razorpay(options);
-  //       razor.open();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error during checkout:", error);
-  //     });
-  // };
-  const checkoutHandler = async (amount: number) => {
-    // const { data: { key } } = await axios.get(`${process.env.BACKEND_URL}/orders/getkey`)
-    const { data: { key } } = await axios.get("http://localhost:5000/api/orders/getkey")
-
-    const { data: { order } } = await axios.post("http://localhost:5000/api/orders/", {
-      amount: amount,
-      user_id: 1,
-      address_id: 1,
-      payment_method: "card",
-    })
-
-    console.log(order);
-    console.log(key);
-    var options = {
-      key: key, // Enter the Key ID generated from the Dashboard
-      amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-      currency: "INR",
-      name: "Reelx",
-      description: "Test Transaction",
-      image: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Wikimedia_Brand_Guidelines_Update_2022_Wikimedia_Logo_Brandmark.png",
-      order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-      callback_url: "http://localhost:3000/cart",
-      prefill: {
-        name: userData?.firstName,
-        email: userData?.email,
-        contact: userData?.phone,
-      },
-      notes: {
-        "address": "Razorpay Corporate Office"
-      },
-      theme: {
-        "color": "#000000"
-      }
-    };
-    const razor = new window.Razorpay(options);
-    razor.open();
-  }
-
-
-
   return (
-    <div className='cart flex py-[20px] justify-center bg-white 2xl:max-w-screen-xl mx-auto w-full flex-col items-center gap-[30px] '>
-      <div className='carttopmobile w-full flex justify-between items-start items-center gap-2 p-2 border-b-[1px] border-gray'>
-        <div className='flex flex-col w-[40%] gap-0'>
-          <p className='text-xs font-light'>Total :</p>
-          <p className='text-l font-bold'>
-            ₹ {finalAmount}/-
-          </p>
+    <div className="cart flex py-[20px] justify-center bg-white 2xl:max-w-screen-xl mx-auto w-full flex-col items-center gap-[30px]">
+      <div className="carttopmobile w-full flex justify-between items-center gap-2 p-2 border-b-[1px] border-gray">
+        <div className="flex flex-col w-[40%] gap-0">
+          <p className="text-xs font-light">Total :</p>
+          <p className="text-l font-bold">₹ {finalAmount}/-</p>
         </div>
-        <button className='w-full text-sm font-semibold border border-black bg-black flex items-center justify-center text-white py-2 gap-3'>CHECKOUT</button>
+        <button className="w-full text-sm font-semibold border border-black bg-black flex items-center justify-center text-white py-2 gap-3">
+          CHECKOUT
+        </button>
       </div>
-      <div className='w-full flex justify-between items-center'>
+      <div className="w-full flex justify-between items-center">
         <p className="heading text-xl font-bold">My Cart</p>
-        <p>2 items</p>
+        <p>{cartItems.length} items</p>
       </div>
-      <div className='cartlr w-full flex justify-between items-start'>
-        <div className='cartleft products w-[60%] border border-black'>
-          {products.map(product => (
-            <div className='w-full relative' key={product.id} >
+      <div className="cartlr w-full flex justify-between items-start">
+        <div className="cartleft products w-[60%] border border-black">
+          {cartItems.map((product) => (
+            <div className="w-full relative" key={product.product_id}>
               <div className="product flex items-center p-[16px] gap-[20px]">
-                <div className='asp w-[100px] relative'>
-                  <Image className='absolute w-[100%] h-[100%]' src={product.img} alt={product.name} fill={true} />
+                <div className="asp w-[100px] relative">
+                  <Image
+                    className="absolute w-[100%] h-[100%]"
+                    src={product.images[0]}
+                    alt={product.name}
+                    fill={true}
+                  />
                 </div>
-                <div className='flex h-[150px] flex-col justify-between gap-2 w-full'>
-                  <div className='w-full flex flex-col gap-2 justify-start'>
-                    <div className='w-full flex items-center justify-between '>
-                      <p className='cartcardname text-sm font-bold truncate-text'>{product.name}</p>
-                      <Trash2 size={18} color='gray' className='carttrash' />
+                <div className="flex h-[150px] flex-col justify-between gap-2 w-full">
+                  <div className="w-full flex flex-col gap-2 justify-start">
+                    <div className="w-full flex items-center justify-between">
+                      <p className="cartcardname text-sm font-bold truncate-text">{product.name}</p>
+                      <Trash2
+                        size={18}
+                        color="gray"
+                        className="cursor-pointer"
+                        onClick={() => setDeleteModal({ show: true, product_id: product.product_id })}
+                      />
                     </div>
-                    <p className='cardcardamount2 text-sm font-light'>₹ {(product.price * (quantities[product.id] || 1)).toFixed(2)}</p>
-                    <p className='text-xs text-gray-600'><b>Color: </b>{product.color}</p>
-                    <p className='text-xs text-gray-600'><b>Size: </b>{product.size}</p>
-                    {/* <p className='text-xs text-gray-600'><b>Product Price: </b>{product.price}</p> */}
+                    <p className="cardcardamount2 text-sm font-light">
+                      ₹ {(product.discountedprice * product.quantity).toFixed(2)}
+                    </p>
+                    <p className="text-xs text-gray-600">
+                      <b>Color: </b>
+                      {product.color}
+                    </p>
+                    <p className="text-xs text-gray-600">
+                      <b>Size: </b>
+                      {product.size}
+                    </p>
                   </div>
-                  <div className='w-full flex items-center justify-between w-full'>
-                    <div className='flex items-center gap-[20px]'>
-                      <button className='cartcardheart'>
-                        <Heart />
-                      </button>
-
-                      {/* Increment/Decrement buttons for each product */}
-                      <div className="quantity-controls flex items-center">
-                        <button
-                          className='py-1 px-3 border border-black rounded-l-xl bg-black text-white'
-                          onClick={() => updateQuantity(product.id, -1)}
-                        >
-                          -
-                        </button>
-                        <input
-                          type="number"
-                          value={quantities[product.id] || 1}
-                          readOnly
-                          className="w-[40px] text-center border-t border-b py-1 text-center border-black"
+                  <div className="w-full flex items-center justify-between">
+                    <div className="flex items-center gap-[20px]">
+                      <div className="cartcardheart">
+                        <Heart
+                          onClick={(e) => handleWishlistToggle(product.product_id, e)}
+                          size={20}
+                          color={wishlist[product.product_id] ? "red" : "gray"} // Change color based on wishlist status
+                          fill={wishlist[product.product_id] ? "red" : "none"} // Filled heart if wishlisted
+                          className="cursor-pointer"
                         />
-                        <button
-                          className='py-1 px-3 border border-black rounded-r-xl bg-black text-white'
-                          onClick={() => updateQuantity(product.id, 1)}
-                        >
-                          +
-                        </button>
                       </div>
-                      <Trash2 size={18} color='gray' className='carttrash2' />
+                      <div className="quantity-controls flex items-center">
+                        <select
+                          className="border border-black px-2 py-1 rounded-md"
+                          value={product.quantity}
+                          disabled={loadingStates[product.product_id]}
+                          onChange={(e) =>
+                            updateCartQuantity(product.product_id, product.size, parseInt(e.target.value))
+                          }
+                        >
+                          {Array.from({ length: product.raw_tshirt.quantity }, (_, i) => i + 1).map((num) => (
+                            <option key={num} value={num}>
+                              {num}
+                            </option>
+                          ))}
+                        </select>
+                        {loadingStates[product.product_id] && <span className="text-xs text-gray-500 ml-2">Updating...</span>}
+                      </div>
+                      <Trash2
+                        size={18}
+                        color="gray"
+                        className="cursor-pointer"
+                        onClick={() => setDeleteModal({ show: true, product_id: product.product_id })}
+                      />
                     </div>
-                    <p className='cartcardamount text-sm font-light'>₹ {(product.price * (quantities[product.id] || 1)).toFixed(2)}</p>
+                    <p className="cartcardamount text-sm font-light">
+                      ₹ {(product.discountedprice * product.quantity).toFixed(2)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -225,47 +276,55 @@ const Page = () => {
           ))}
         </div>
         <div className="cartcheckout w-[35%] flex flex-col gap-5">
-          <button className='w-full border text-md border-black flex items-center justify-center bg-black text-white py-2 gap-3'><ShoppingBag /> <p>Continue Shopping</p> </button>
+          <button className='w-full border text-md border-black flex items-center justify-center bg-black text-white py-2 gap-3'>
+            <ShoppingBag /> <p>Continue Shopping</p>
+          </button>
           <div className='w-full border border-gray-400 p-[20px] rounded-md flex flex-col items-center justify-start gap-5'>
             <p className='text-lg font-light mb-5'>Order Summary</p>
             <div className='w-full flex justify-between items-center text-sm font-semibold'>
               <p>Offers</p>
-              <p className='underline text-xs'>
-                Apply Coupons
-              </p>
+              <p className='underline text-xs'>Apply Coupons</p>
             </div>
             <div className='w-full h-[1px] bg-gray-300' />
             <div className='w-full flex justify-between items-center text-sm font-semibold'>
               <p>Sub-Total</p>
-              <p>
-                ₹ {productTotal}
-              </p>
+              <p>₹ {productTotal}</p>
             </div>
             <div className='w-full flex justify-between items-center text-sm font-semibold'>
               <p>Shipping</p>
-              <p>
-                ₹ {shipping}
-              </p>
+              <p>₹ {shipping}</p>
             </div>
             <div className='w-full flex justify-between items-center text-sm font-semibold'>
-              <p>Discounts</p>
-              <p>
-                ₹ {discount}
-              </p>
+              <p>Discount</p>
+              <p>- ₹ {discount}</p>
             </div>
-            <div className='w-full h-[1px] bg-gray-400' />
+            <div className='w-full h-[1px] bg-gray-300' />
             <div className='w-full flex justify-between items-center text-md font-bold'>
               <p>Total</p>
-              <p>
-                ₹ {finalAmount}
-              </p>
+              <p>₹ {finalAmount}</p>
             </div>
-            <button onClick={() => checkoutHandler(finalAmount)} className='w-full text-sm font-semibold border border-black bg-black flex items-center justify-center text-white py-2 gap-3'>CHECKOUT</button>
           </div>
         </div>
       </div>
+      {deleteModal.show && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Remove Item</h3>
+              <X className="cursor-pointer" onClick={() => setDeleteModal({ show: false, product_id: null })} />
+            </div>
+            <p>Are you sure you want to remove this item from the cart?</p>
+            <div className="mt-4 flex justify-end gap-3">
+              <button className="px-4 py-2 border rounded" onClick={() => setDeleteModal({ show: false, product_id: null })}>Cancel</button>
+              <button className="px-4 py-2 bg-red-600 text-white rounded" onClick={deleteCartItem}>
+                {loadingStates[deleteModal.product_id!] ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;

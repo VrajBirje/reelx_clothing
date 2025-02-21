@@ -4,13 +4,15 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Heart, Ruler, Share2, ShoppingBag } from 'lucide-react'
-import React from 'react'
-import "../../product/product.css"
-import Image from "next/image"
+import { useParams, useRouter } from "next/navigation";
+import { Heart, Ruler, Share2, ShoppingBag } from "lucide-react";
+import React from "react";
+import "../../product/product.css";
+import Image from "next/image";
+import { toast } from "react-hot-toast";
+import { redirectToSignIn, useUser } from "@clerk/nextjs";
 
 interface RawTshirt {
   id: number;
@@ -34,11 +36,69 @@ interface Product {
   color: string;
 }
 
-const page = () => {
+const Page = () => {
   const { id } = useParams();
+  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedRawTshirt, setSelectedRawTshirt] = useState<RawTshirt | null>(null);
+  const { user } = useUser();
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const customer_id = user?.id;
 
+  useEffect(() => {
+    if (!customer_id || !product) return;
+
+    // Fetch wishlist to check if the product is already added
+    const fetchWishlist = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist/wishlist/${customer_id}`);
+        const data = await res.json();
+
+        if (data.success) {
+          setIsInWishlist(data.products.some((p: any) => p.product_id === product.product_id));
+        }
+      } catch (error) {
+        console.error("Error fetching wishlist:", error);
+      }
+    };
+
+    fetchWishlist();
+  }, [customer_id, product]);
+
+  const handleWishlistToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!customer_id) {
+      toast.error("Please sign in to use the wishlist!");
+      return;
+    }
+
+    try {
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/wishlist/${isInWishlist ? "remove" : "add"}`;
+      const method = isInWishlist ? "DELETE" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customer_id, product_id: product?.product_id }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setIsInWishlist(!isInWishlist);
+        toast.success(isInWishlist ? "Removed from wishlist!" : "Added to wishlist!");
+      }
+    } catch (error) {
+      console.error("Wishlist update error:", error);
+    }
+  };
+
+
+
+  console.log(selectedSize);
   useEffect(() => {
     if (!id) return;
 
@@ -48,7 +108,6 @@ const page = () => {
         const data = await response.json();
         if (data.success) {
           setProduct(data.data);
-          console.log(product)
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -60,8 +119,62 @@ const page = () => {
     fetchProduct();
   }, [id]);
 
+  useEffect(() => {
+    if (selectedSize && product) {
+      const rawTshirt = product.raw_tshirt_ids.find((item) => item.size === selectedSize);
+      setSelectedRawTshirt(rawTshirt || null);
+    }
+  }, [selectedSize, product]);
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      toast.error("Please log in to add items to the cart!");
+      return router.push("/sign-in"); // Redirect only when clicking Add to Cart
+    }
+
+
+    if (!selectedRawTshirt) {
+      toast.error("Please select a valid size before adding to cart!");
+      return;
+    }
+
+    if (selectedRawTshirt.quantity <= 0) {
+      toast.error("Selected size is out of stock!");
+      return;
+    }
+
+    const customer_id = user.id; // Replace with actual Clerk ID
+
+    try {
+      const response = await fetch("http://localhost:5000/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customer_id,
+          raw_tshirt_id: selectedRawTshirt.id,
+          product_id: product?.product_id,
+          size: selectedSize,
+          quantity: 1,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success("Added to cart successfully!");
+      } else {
+        toast.error(data.message || "Failed to add to cart!");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Something went wrong!");
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (!product) return <p>Product not found</p>;
+
   return (
     <div className='productmain flex py-[20px] justify-center bg-white px-[4%] w-full flex-col items-center gap-[10px] '>
       <p className='text-xs font-medium'>Home / Shop / Gym-Wear / <b>{product.name}</b></p>
@@ -82,7 +195,13 @@ const page = () => {
         <div className='productinfo flex flex-col gap-[20px]'>
           <div className='w-full flex items-center justify-between'>
             <p className='text-md font-semibold'>{product.name}</p>
-            <Heart />
+            <Heart
+              onClick={handleWishlistToggle}
+              color={isInWishlist ? "red" : "gray"}
+              fill={isInWishlist ? "red" : "transparent"}
+              className="cursor-pointer"
+            />
+
           </div>
           <div className='flex flex-col items-start jusify-center gap-[5px]'>
             <div className="prices w-full flex items-center justify-start gap-[20px]">
@@ -101,17 +220,37 @@ const page = () => {
               </div>
             </div>
             <div className='flex w-full items-center justify-start flex-wrap gap-[20px]'>
-              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>S</div>
+              {/* <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>S</div>
               <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>M</div>
               <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>L</div>
-              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>XL</div>
+              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>XL</div> */}
+              {product.raw_tshirt_ids.map((rawTshirt) => (
+                <button
+                  key={rawTshirt.id}
+                  className={`border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md ${selectedSize === rawTshirt.size ? "bg-gray-200" : ""
+                    } ${rawTshirt.quantity === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  onClick={() => setSelectedSize(rawTshirt.size)}
+                  disabled={rawTshirt.quantity === 0}
+                >
+                  {rawTshirt.size}
+                </button>
+              ))}
             </div>
           </div>
-          <p className='font-light text-gray-500 text-xs'>Tip: Review the Size Chart before buying the Product</p>
+          <p className='font-bold text-gray-500 text-xs'>Tip: Review the Size Chart before buying the Product</p>
           <div className='Buttons flex flex-col gap-[20px]'>
-            <button className='w-full border border-black py-[10px] flex items-center justify-center gap-[10px]'>
+            {/* <button className='w-full border border-black py-[10px] flex items-center justify-center gap-[10px]'>
               <ShoppingBag size={18} />
               <p className='text-sm font-semibold'>Add to Cart</p>
+            </button> */}
+            <button
+              className="w-full border border-black py-[10px] flex items-center justify-center gap-[10px]
+              disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+              onClick={handleAddToCart}
+              disabled={!selectedRawTshirt || selectedRawTshirt.quantity === 0}
+            >
+              <ShoppingBag size={18} />
+              <p className="text-sm font-semibold">Add to Cart</p>
             </button>
             <button className='w-full bg-black text-white py-[10px] flex items-center justify-center gap-[10px]'>
               <p className='text-sm font-semibold'>Buy Now</p>
@@ -186,4 +325,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

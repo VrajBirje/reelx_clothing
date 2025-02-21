@@ -11,7 +11,7 @@ export default authMiddleware({
     "/api/webhook",
     "/sign-in",  
     "/sign-up",
-    "/product"
+    "/product(.*)"
   ],
   ignoredRoutes: [
     "/api/webhook"

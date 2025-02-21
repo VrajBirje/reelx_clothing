@@ -46,7 +46,8 @@ const CardBox: React.FC<CardBoxProps> = ({ product_id, name, price, discountedPr
     e.stopPropagation();
 
     if (!customer_id) {
-      alert("Please log in to use the wishlist.");
+      toast.error("Please sign in to use the wishlist!");
+      // router.push("/sign-in");
       return;
     }
 
@@ -73,7 +74,7 @@ const CardBox: React.FC<CardBoxProps> = ({ product_id, name, price, discountedPr
   };
 
   return (
-    <div onClick={() => router.push(`/product/${product_id}`)} className="cardbox flex flex-col items-center justify-center gap-0 border-gray-300 relative">
+    <div onClick={() => router.push(`/product/${product_id}`)} className="cardbox flex flex-col items-center justify-center cursor-pointer gap-0 border-gray-300 relative">
       <div className="cardtag absolute top-0 right-0 text-xs py-[2px] px-[5px] font-medium text-white bg-black">{tag}</div>
       <div className="cardimg w-[21vw] object-contain relative">
         <Image src={image} className="absolute" alt="" fill={true} />

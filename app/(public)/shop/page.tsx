@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CardBox from "@/components/shared/card";
 import "./page.css";
-
+import FlyingBird from "@/components/animatedLogo";
 interface Product {
   product_id: number;
   name: string;
@@ -95,7 +95,7 @@ const Page: React.FC = () => {
         {/* Products Grid */}
         <div className="w-full flex flex-wrap justify-between gap-4">
           {loading ? (
-            <p className="text-center text-gray-500">Loading products...</p>
+            <FlyingBird />
           ) : products.length > 0 ? (
             products.map((product) => (
               <div key={product.product_id} className="shopcardbox">

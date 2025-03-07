@@ -12,7 +12,8 @@ import React from "react";
 import "../../product/product.css";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
-import { redirectToSignIn, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+import FlyingBird from "@/components/animatedLogo";
 
 interface RawTshirt {
   id: number;
@@ -46,6 +47,7 @@ const Page = () => {
   const { user } = useUser();
   const [isInWishlist, setIsInWishlist] = useState(false);
   const customer_id = user?.id;
+  const [selectedImage, setSelectedImage] = useState<string>("");
 
   useEffect(() => {
     if (!customer_id || !product) return;
@@ -96,9 +98,6 @@ const Page = () => {
     }
   };
 
-
-
-  console.log(selectedSize);
   useEffect(() => {
     if (!id) return;
 
@@ -108,6 +107,7 @@ const Page = () => {
         const data = await response.json();
         if (data.success) {
           setProduct(data.data);
+          setSelectedImage(data.data.images[0]); // Set initial selected image
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -132,7 +132,6 @@ const Page = () => {
       return router.push("/sign-in"); // Redirect only when clicking Add to Cart
     }
 
-
     if (!selectedRawTshirt) {
       toast.error("Please select a valid size before adding to cart!");
       return;
@@ -143,7 +142,7 @@ const Page = () => {
       return;
     }
 
-    const customer_id = user.id; // Replace with actual Clerk ID
+    const customer_id = user.id;
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, {
@@ -172,7 +171,7 @@ const Page = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <div className="h-screen flex items-center justify-center"><FlyingBird /></div>;
   if (!product) return <p>Product not found</p>;
 
   return (
@@ -181,15 +180,15 @@ const Page = () => {
       <div className='productmain2 w-full flex items-start justify-center mt-[20px] gap-[20px]'>
         <div className='productimgbox w-[68%] flex flex-wrap overflow-y-auto'>
           <div className='productimg1 relative w-[50%]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
-          <div className='productimg1 relative w-[50%]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
-          <div className='productimg1 relative w-[50%]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
+          <div className='productimg1 relative w-[50%]'><Image src={product.images[1]} className='absolute' alt="" fill={true} /></div>
+          <div className='productimg1 relative w-[50%]'><Image src={product.images[2]} className='absolute' alt="" fill={true} /></div>
         </div>
         <div className='productimgbox2 w-[100%] flex flex-col '>
-          <div className='productimg1 relative h-[50vh] w-[100%]'><Image src="/assets/img6.png" className='absolute' alt="" fill={true} /></div>
+          <div className='productimg1 relative h-[50vh] w-[100%]'><Image src={selectedImage} className='absolute' alt="" fill={true} /></div>
           <div className="flex w-[100%] items-center justify-start p-[10px] gap-[10px]">
-            <div className='productimg12 relative w-[60px] h-[70px]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
-            <div className='productimg12 relative w-[60px] h-[70px]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
-            <div className='productimg12 relative w-[60px] h-[70px]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
+            <div className='productimg12 relative w-[60px] h-[70px] cursor-pointer' onClick={() => setSelectedImage(product.images[0])}><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
+            <div className='productimg12 relative w-[60px] h-[70px] cursor-pointer' onClick={() => setSelectedImage(product.images[1])}><Image src={product.images[1]} className='absolute' alt="" fill={true} /></div>
+            <div className='productimg12 relative w-[60px] h-[70px] cursor-pointer' onClick={() => setSelectedImage(product.images[2])}><Image src={product.images[2]} className='absolute' alt="" fill={true} /></div>
           </div>
         </div>
         <div className='productinfo flex flex-col gap-[20px]'>
@@ -220,10 +219,6 @@ const Page = () => {
               </div>
             </div>
             <div className='flex w-full items-center justify-start flex-wrap gap-[20px]'>
-              {/* <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>S</div>
-              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>M</div>
-              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>L</div>
-              <div className='border border-gray-300 flex items-center justify-center w-[80px] h-[37px] font-regular text-md'>XL</div> */}
               {product.raw_tshirt_ids.map((rawTshirt) => (
                 <button
                   key={rawTshirt.id}
@@ -239,10 +234,6 @@ const Page = () => {
           </div>
           <p className='font-bold text-gray-500 text-xs'>Tip: Review the Size Chart before buying the Product</p>
           <div className='Buttons flex flex-col gap-[20px]'>
-            {/* <button className='w-full border border-black py-[10px] flex items-center justify-center gap-[10px]'>
-              <ShoppingBag size={18} />
-              <p className='text-sm font-semibold'>Add to Cart</p>
-            </button> */}
             <button
               className="w-full border border-black py-[10px] flex items-center justify-center gap-[10px]
               disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
@@ -280,7 +271,7 @@ const Page = () => {
                 <div className="shipping text-black flex flex-col items-start justify-start gap-2">
                   <p className="text-xs font-semibold">Size Details</p>
                   <div className="text-xs flex flex-col items-start justify-start gap-1">
-                    <p>• Model (Height 6’1″) is wearing size L</p>
+                    <p>• Model (Height 6'1″) is wearing size L</p>
                     <p>• <b>Chest:</b> 37 inches</p>
                     <p>• <b>Waist:</b> 30 inches</p>
                     <p>• <b>Fit:</b> Oversized drop shoulder tee</p>

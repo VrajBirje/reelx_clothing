@@ -1,0 +1,17 @@
+/* components/AnimatedSVG.module.css */
+@keyframes shine {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  .shineEffect {
+    overflow: hidden;
+  }
+  
+  .shineEffect path {
+    animation: shine 2s linear infinite;
+  }

@@ -3,7 +3,7 @@ import CardBox from "@/components/shared/card";
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import "../protect.css";
-
+import FlyingBird from "@/components/animatedLogo";
 const WishlistPage = () => {
   const { user } = useUser();
   const customer_id = user?.id;
@@ -45,7 +45,9 @@ const WishlistPage = () => {
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <div className="h-screen flex items-center justify-center">
+          <FlyingBird />
+        </div>
       ) : wishlistItems.length === 0 ? (
         <p>Your wishlist is empty.</p>
       ) : (

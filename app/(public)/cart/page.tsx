@@ -1,10 +1,12 @@
 "use client";
-import { Heart, ShoppingBag, Trash2, X } from "lucide-react";
+import { Banknote, CreditCard, Heart, ShoppingBag, Trash2, X } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import "./cart.css";
 import axios from "axios";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import FlyingBird from "@/components/animatedLogo";
+import CheckoutModal from '@/components/CheckoutModal';
 
 interface UserData {
   firstName: string;
@@ -38,10 +40,18 @@ const Page = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<{ [key: number]: boolean }>({});
   const [loadingStates, setLoadingStates] = useState<{ [key: number]: boolean }>({});
+  const [loading, setLoading] = useState(true);
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online'>('online');
   const [deleteModal, setDeleteModal] = useState<{ show: boolean; product_id: number | null }>({
     show: false,
     product_id: null,
   });
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [discountedAmount, setDiscountedAmount] = useState(0);
+  const [isNewUser, setIsNewUser] = useState(true);
+  const [isLoadingCoupon, setIsLoadingCoupon] = useState(false);
 
   useEffect(() => {
     const storedData = localStorage.getItem("userData");
@@ -53,6 +63,26 @@ const Page = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const checkIfNewUser = async () => {
+      if (userData?.id) {
+        try {
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/orders/orders/${userData.id}`);
+          // Check for exact structure: { success: true, data: [] }
+          setIsNewUser(
+            response.data.success === true && 
+            Array.isArray(response.data.data) && 
+            response.data.data.length === 0
+          );
+        } catch (error) {
+          console.error("Error checking order history:", error);
+          setIsNewUser(false);
+        }
+      }
+    };
+    checkIfNewUser();
+  }, [userData]);
+
   // Fetch Cart Items
   const fetchCartItems = async (userId: string) => {
     try {
@@ -60,9 +90,11 @@ const Page = () => {
       setCartItems(data.data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
+    } finally {
+      setLoading(false);
     }
   };
-
+  // Rest of your component code remains the same...
   // Fetch Wishlist
   const fetchWishlist = async (userId: string) => {
     try {
@@ -80,6 +112,22 @@ const Page = () => {
       console.error("Error fetching wishlist:", error);
     }
   };
+
+  if (loading) {
+    return <FlyingBird />;
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
+          <p className="text-gray-600">Add some items to your cart to get started!</p>
+        </div>
+      </div>
+    );
+  }
+
 
   // Toggle Wishlist Function
   const handleWishlistToggle = async (product_id: number, e: React.MouseEvent) => {
@@ -175,94 +223,46 @@ const Page = () => {
     }
   };
 
-  const shipping = 99.0;
-  const discount = 199.0;
+  const codCharge = paymentMethod === 'cod' ? 50.0 : 0;
 
   // Calculate total price
   const productTotal = cartItems.reduce((total, product) => total + product.discountedprice * product.quantity, 0);
 
   // Calculate final amount
-  const finalAmount = productTotal + shipping - discount;
+  const finalAmount = productTotal + codCharge - discountedAmount;
 
-  // Razorpay Payment Handler
-  const initiateRazorpayPayment = async (finalAmount: number) => {
+  // Update the checkout button click handler
+  const handleCheckoutClick = () => {
+    setIsCheckoutModalOpen(true);
+  };
+
+  const validateCoupon = async () => {
+    if (!userData?.id) return;
+    setIsLoadingCoupon(true);
+
     try {
-      // Call your backend to create a Razorpay order
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment/create-order`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: finalAmount,
-          currency: 'INR',
-          receipt: `order_${Date.now()}`, // Unique receipt ID
-        }),
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/coupons/validate`, {
+        code: couponCode,
+        clerk_user_id: userData.id,
+        order_amount: productTotal,
+        is_new_user: isNewUser
       });
 
-      const order = await response.json();
-
-      if (!order.id) {
-        throw new Error('Failed to create Razorpay order');
+      if (response.data.success) {
+        setDiscountedAmount(response.data.discount);
+        toast.success("Coupon applied successfully!");
+        setIsCouponModalOpen(false);
+      } else {
+        toast.error(response.data.message);
       }
-
-      // Razorpay options
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your Razorpay Key ID
-        amount: order.amount, // Amount in paise
-        currency: order.currency,
-        order_id: order.id, // Razorpay order ID
-        name: 'Your Company Name',
-        description: 'Payment for your order',
-        handler: async function (response: RazorpayResponse) {
-          // Handle payment success
-          console.log('Payment successful!', response);
-
-          // Verify payment on your backend
-          const verificationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment/verify-payment`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-            }),
-          });
-
-          const verificationData = await verificationResponse.json();
-
-          if (verificationData.status === 'success') {
-            toast.success('Payment verified successfully!');
-            // Redirect to a success page or clear the cart
-            handleSuccessfulPayment();
-          } else {
-            toast.error('Payment verification failed!');
-          }
-        },
-        prefill: {
-          name: userData?.firstName + ' ' + userData?.lastName,
-          email: userData?.email || '',
-          contact: userData?.phone || '',
-        },
-        theme: {
-          color: '#3399cc',
-        },
-      };
-
-      // Open Razorpay payment modal
-      const rzp = new (window as any).Razorpay(options);
-      rzp.open();
-    } catch (error) {
-      console.error('Payment failed:', error);
-      toast.error('Payment failed. Please try again.');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Failed to validate coupon";
+      toast.error(errorMessage);
+    } finally {
+      setIsLoadingCoupon(false);
     }
   };
 
-  const handleSuccessfulPayment = () =>{
-    return;
-  }
   return (
     <div className="cart flex py-[20px] justify-center bg-white 2xl:max-w-screen-xl mx-auto w-full flex-col items-center gap-[30px]">
       <div className="carttopmobile w-full flex justify-between items-center gap-2 p-2 border-b-[1px] border-gray">
@@ -272,7 +272,7 @@ const Page = () => {
         </div>
         <button
           className="w-full text-sm font-semibold border border-black bg-black flex items-center justify-center text-white py-2 gap-3"
-          onClick={() => initiateRazorpayPayment(finalAmount)}
+          onClick={handleCheckoutClick}
         >
           CHECKOUT
         </button>
@@ -282,109 +282,164 @@ const Page = () => {
         <p>{cartItems.length} items</p>
       </div>
       <div className="cartlr w-full flex justify-between items-start">
-        <div className="cartleft products w-[60%] border border-black">
-          {cartItems.map((product) => (
-            <div className="w-full relative" key={product.product_id}>
-              <div className="product flex items-center p-[16px] gap-[20px]">
-                <div className="asp w-[100px] relative">
-                  <Image
-                    className="absolute w-[100%] h-[100%]"
-                    src={product.images[0]}
-                    alt={product.name}
-                    fill={true}
-                  />
-                </div>
-                <div className="flex h-[150px] flex-col justify-between gap-2 w-full">
-                  <div className="w-full flex flex-col gap-2 justify-start">
-                    <div className="w-full flex items-center justify-between">
-                      <p className="cartcardname text-sm font-bold truncate-text">{product.name}</p>
-                      <Trash2
-                        size={18}
-                        color="gray"
-                        className="cursor-pointer"
-                        onClick={() => setDeleteModal({ show: true, product_id: product.product_id })}
-                      />
-                    </div>
-                    <p className="cardcardamount2 text-sm font-light">
-                      ₹ {(product.discountedprice * product.quantity).toFixed(2)}
-                    </p>
-                    <p className="text-xs text-gray-600">
-                      <b>Color: </b>
-                      {product.color}
-                    </p>
-                    <p className="text-xs text-gray-600">
-                      <b>Size: </b>
-                      {product.size}
-                    </p>
+        <div className="w-[60%] flex flex-col">
+          <div className="cartleft products w-full border border-black">
+            {cartItems.map((product) => (
+              <div className="w-full relative" key={product.product_id}>
+                <div className="product flex items-center p-[16px] gap-[20px]">
+                  <div className="asp w-[100px] relative">
+                    <Image
+                      className="absolute w-[100%] h-[100%]"
+                      src={product.images[0]}
+                      alt={product.name}
+                      fill={true}
+                    />
                   </div>
-                  <div className="w-full flex items-center justify-between">
-                    <div className="flex items-center gap-[20px]">
-                      <div className="cartcardheart">
-                        <Heart
-                          onClick={(e) => handleWishlistToggle(product.product_id, e)}
-                          size={20}
-                          color={wishlist[product.product_id] ? "red" : "gray"} // Change color based on wishlist status
-                          fill={wishlist[product.product_id] ? "red" : "none"} // Filled heart if wishlisted
+                  <div className="flex h-[150px] flex-col justify-between gap-2 w-full">
+                    <div className="w-full flex flex-col gap-2 justify-start">
+                      <div className="w-full flex items-center justify-between">
+                        <p className="cartcardname text-sm font-bold truncate-text">{product.name}</p>
+                        <Trash2
+                          size={18}
+                          color="gray"
                           className="cursor-pointer"
+                          onClick={() => setDeleteModal({ show: true, product_id: product.product_id })}
                         />
                       </div>
-                      <div className="quantity-controls flex items-center">
-                        <select
-                          className="border border-black px-2 py-1 rounded-md"
-                          value={product.quantity}
-                          disabled={loadingStates[product.product_id]}
-                          onChange={(e) =>
-                            updateCartQuantity(product.product_id, product.size, parseInt(e.target.value))
-                          }
-                        >
-                          {Array.from({ length: product.raw_tshirt.quantity }, (_, i) => i + 1).map((num) => (
-                            <option key={num} value={num}>
-                              {num}
-                            </option>
-                          ))}
-                        </select>
-                        {loadingStates[product.product_id] && <span className="text-xs text-gray-500 ml-2">Updating...</span>}
-                      </div>
-                      <Trash2
-                        size={18}
-                        color="gray"
-                        className="cursor-pointer"
-                        onClick={() => setDeleteModal({ show: true, product_id: product.product_id })}
-                      />
+                      <p className="cardcardamount2 text-sm font-light">
+                        ₹ {(product.discountedprice * product.quantity).toFixed(2)}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        <b>Color: </b>
+                        {product.color}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        <b>Size: </b>
+                        {product.size}
+                      </p>
                     </div>
-                    <p className="cartcardamount text-sm font-light">
-                      ₹ {(product.discountedprice * product.quantity).toFixed(2)}
-                    </p>
+                    <div className="w-full flex items-center justify-between">
+                      <div className="flex items-center gap-[20px]">
+                        <div className="cartcardheart">
+                          <Heart
+                            onClick={(e) => handleWishlistToggle(product.product_id, e)}
+                            size={20}
+                            color={wishlist[product.product_id] ? "red" : "gray"} // Change color based on wishlist status
+                            fill={wishlist[product.product_id] ? "red" : "none"} // Filled heart if wishlisted
+                            className="cursor-pointer"
+                          />
+                        </div>
+                        <div className="quantity-controls flex items-center">
+                          <select
+                            className="border border-black px-2 py-1 rounded-md"
+                            value={product.quantity}
+                            disabled={loadingStates[product.product_id]}
+                            onChange={(e) =>
+                              updateCartQuantity(product.product_id, product.size, parseInt(e.target.value))
+                            }
+                          >
+                            {Array.from({ length: product.raw_tshirt.quantity }, (_, i) => i + 1).map((num) => (
+                              <option key={num} value={num}>
+                                {num}
+                              </option>
+                            ))}
+                          </select>
+                          {loadingStates[product.product_id] && <span className="text-xs text-gray-500 ml-2">Updating...</span>}
+                        </div>
+                        <Trash2
+                          size={18}
+                          color="gray"
+                          className="cursor-pointer"
+                          onClick={() => setDeleteModal({ show: true, product_id: product.product_id })}
+                        />
+                      </div>
+                      <p className="cartcardamount text-sm font-light">
+                        ₹ {(product.discountedprice * product.quantity).toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <hr />
+              </div>
+            ))}
+          </div>
+          <button className='w-full border text-md border-black flex items-center justify-center bg-black text-white py-2 gap-3 mt-5'>
+            <ShoppingBag /> <p>Continue Shopping</p>
+          </button>
+        </div>
+        <div className="cartcheckout w-[35%] flex flex-col gap-5">
+
+
+          {/* Payment Method Selection */}
+          <div className='w-full border border-gray-400 p-3 rounded-md'>
+            <p className='text-sm font-light mb-2'>Payment Method</p>
+            <div className='flex gap-3'>
+              <div
+                className={`flex items-center gap-2 p-2 border rounded-md cursor-pointer ${paymentMethod === 'online' ? 'border-black' : 'border-gray-300'}`}
+                onClick={() => setPaymentMethod('online')}
+              >
+                <input
+                  type="radio"
+                  checked={paymentMethod === 'online'}
+                  onChange={() => setPaymentMethod('online')}
+                />
+                <div className="flex items-center gap-1">
+                  <CreditCard size={14} />
+                  <div>
+                    <p className='text-xs font-semibold'>Online Payment</p>
+                    <p className='text-xs text-gray-600'>Pay securely</p>
                   </div>
                 </div>
               </div>
-              <hr />
+
+              <div
+                className={`flex items-center gap-2 p-2 border rounded-md cursor-pointer ${paymentMethod === 'cod' ? 'border-black' : 'border-gray-300'}`}
+                onClick={() => setPaymentMethod('cod')}
+              >
+                <input
+                  type="radio"
+                  checked={paymentMethod === 'cod'}
+                  onChange={() => setPaymentMethod('cod')}
+                />
+                <div className="flex items-center gap-1">
+                  <Banknote size={14} />
+                  <div>
+                    <p className='text-xs font-semibold'>Cash on Delivery</p>
+                    <p className='text-xs text-gray-600'>+₹50 charge</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
-        <div className="cartcheckout w-[35%] flex flex-col gap-5">
-          <button className='w-full border text-md border-black flex items-center justify-center bg-black text-white py-2 gap-3'>
-            <ShoppingBag /> <p>Continue Shopping</p>
-          </button>
+          </div>
+
           <div className='w-full border border-gray-400 p-[20px] rounded-md flex flex-col items-center justify-start gap-5'>
             <p className='text-lg font-light mb-5'>Order Summary</p>
             <div className='w-full flex justify-between items-center text-sm font-semibold'>
               <p>Offers</p>
-              <p className='underline text-xs'>Apply Coupons</p>
+              <p 
+                className='underline text-xs cursor-pointer' 
+                onClick={() => setIsCouponModalOpen(true)}
+              >
+                {discountedAmount > 0 ? `Coupon Applied: ${couponCode}` : 'Apply Coupons'}
+              </p>
             </div>
+            {discountedAmount > 0 && (
+              <div className='w-full flex justify-between items-center text-sm font-semibold text-green-600'>
+                <p>Discount</p>
+                <p>-₹ {discountedAmount}</p>
+              </div>
+            )}
             <div className='w-full h-[1px] bg-gray-300' />
             <div className='w-full flex justify-between items-center text-sm font-semibold'>
               <p>Sub-Total</p>
               <p>₹ {productTotal}</p>
             </div>
-            <div className='w-full flex justify-between items-center text-sm font-semibold'>
-              <p>Shipping</p>
-              <p>₹ {shipping}</p>
-            </div>
-            <div className='w-full flex justify-between items-center text-sm font-semibold'>
-              <p>Discount</p>
-              <p>- ₹ {discount}</p>
-            </div>
+            {paymentMethod === 'cod' && (
+              <div className='w-full flex justify-between items-center text-sm font-semibold'>
+                <p>Shipping</p>
+                <p>₹ {codCharge}</p>
+              </div>
+            )}
             <div className='w-full h-[1px] bg-gray-300' />
             <div className='w-full flex justify-between items-center text-md font-bold'>
               <p>Total</p>
@@ -392,7 +447,7 @@ const Page = () => {
             </div>
             <button
               className='w-full border text-md border-black flex items-center justify-center bg-black text-white py-2 gap-3'
-              onClick={() => initiateRazorpayPayment(finalAmount)}
+              onClick={handleCheckoutClick}
             >
               <ShoppingBag /> <p>Checkout</p>
             </button>
@@ -416,6 +471,47 @@ const Page = () => {
           </div>
         </div>
       )}
+
+      {isCouponModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Apply Coupon</h3>
+              <X className="cursor-pointer" onClick={() => setIsCouponModalOpen(false)} />
+            </div>
+            <input
+              type="text"
+              className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
+              placeholder="Enter coupon code"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+            />
+            <button
+              className="w-full bg-black text-white py-2 rounded"
+              onClick={validateCoupon}
+              disabled={isLoadingCoupon}
+            >
+              {isLoadingCoupon ? "Validating..." : "Apply"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <CheckoutModal
+        isOpen={isCheckoutModalOpen}
+        onClose={() => setIsCheckoutModalOpen(false)}
+        paymentMethod={paymentMethod}
+        amount={finalAmount}
+        userId={userData?.id || ''}
+        userName={`${userData?.firstName || ''} ${userData?.lastName || ''}`}
+        userPhone={userData?.phone || ''}
+        subtotal={productTotal}
+        discountedAmount={discountedAmount}
+        shippingCharges={codCharge}
+        couponCode={couponCode}
+        userEmail={userData?.email || ''}
+        phone2={userData?.phone || ''}
+      />
     </div>
   );
 };

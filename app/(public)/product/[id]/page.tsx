@@ -271,7 +271,7 @@ const Page = () => {
                 <div className="shipping text-black flex flex-col items-start justify-start gap-2">
                   <p className="text-xs font-semibold">Size Details</p>
                   <div className="text-xs flex flex-col items-start justify-start gap-1">
-                    <p>• Model (Height 6'1″) is wearing size L</p>
+                    <p>• Model (Height 6&apos;1″) is wearing size L</p>
                     <p>• <b>Chest:</b> 37 inches</p>
                     <p>• <b>Waist:</b> 30 inches</p>
                     <p>• <b>Fit:</b> Oversized drop shoulder tee</p>

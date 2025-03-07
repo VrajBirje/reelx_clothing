@@ -71,12 +71,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (userId) {
-      fetchAddresses();
-    }
-  }, [userId]);
-
   const fetchAddresses = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/address/user/${userId}`);
@@ -90,6 +84,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       toast.error('Failed to load addresses');
     }
   };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, [fetchAddresses]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

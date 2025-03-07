@@ -34,12 +34,6 @@ const AddressPage = () => {
     pincode: ''
   });
 
-  useEffect(() => {
-    if (user) {
-      fetchAddresses();
-    }
-  }, [user]);
-
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/address/user/${user?.id}`);
@@ -51,6 +45,11 @@ const AddressPage = () => {
       setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    fetchAddresses();
+  }, [fetchAddresses]);
+
 
   const handleDelete = async (addressId: string) => {
     setLoading(true);

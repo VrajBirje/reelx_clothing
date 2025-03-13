@@ -101,7 +101,7 @@ export function ProfileForm() {
   return (
     <>
       <div className="space-y-6 rounded-lg ">
-        <div className="flex justify-between">
+        <div className="flex sm:flex-row flex-col   justify-between">
           <div className="space-y-2 ">
             <h2 className="text-xl font-semibold text-gray-900">
               Profile Information
@@ -184,7 +184,7 @@ export function ProfileForm() {
           </div>
 
           {isEditing && (
-            <div className="flex justify-end">
+            <div className="flex sm:justify-end justify-center">
               <Button
                 type="submit"
                 disabled={isLoading}

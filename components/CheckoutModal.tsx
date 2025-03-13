@@ -31,6 +31,7 @@ interface CheckoutModalProps {
   subtotal: number;
   discountedAmount: number;
   shippingCharges: number;
+  codCharge: number;
   couponCode: string;
   userEmail: string;
   phone2: string;
@@ -49,6 +50,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
   shippingCharges,
   couponCode,
   userEmail,
+  codCharge,
   phone2
 }) => {
   const [step, setStep] = useState(1);
@@ -207,6 +209,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         providedTotal: amount,
         providedDiscountedAmount: discountedAmount,
         shipping_charges: shippingCharges,
+        cod_charges: codCharge,
         payment_method: paymentMethod,
         payment_id: paymentId || "",
         coupon_code: couponCode

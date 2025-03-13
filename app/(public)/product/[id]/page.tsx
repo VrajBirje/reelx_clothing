@@ -206,9 +206,9 @@ const Page = () => {
             <div className="prices w-full flex items-center justify-start gap-[20px]">
               <p className='text-2xl text-black font-semibold'>Rs. {product.discountedprice}</p>
               <p className='text-md line-through text-gray-400 font-regular'>Rs. {product.price}.00</p>
-              <p className='text-xs font-semibold py-[3px] px-[5px] bg-black text-white '>30% OFF</p>
+              <p className='text-xs font-semibold py-[3px] px-[5px] bg-black text-white '>{product.tag}</p>
             </div>
-            <p className='text-xs font-semibold text-gray-500'>Free Shipping over ₹999</p>
+            {/* <p className='text-xs font-semibold text-gray-500'>Free Shipping over ₹999</p> */}
           </div>
           <div className='size w-full flex flex-col gap-[20px]'>
             <div className='w-full flex justify-between'>
@@ -234,27 +234,31 @@ const Page = () => {
           </div>
           <p className='font-bold text-gray-500 text-xs'>Tip: Review the Size Chart before buying the Product</p>
           <div className='Buttons flex flex-col gap-[20px]'>
-            <button
-              className="w-full border border-black py-[10px] flex items-center justify-center gap-[10px]
+            <div className="w-full flex flex-col items-start justify-center">
+              {!selectedRawTshirt && <p className="text-red-500 text-sm">Please select a size first</p>}
+              <button
+                className="w-full border border-black py-[10px] flex items-center justify-center gap-[10px]
               disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-              onClick={handleAddToCart}
-              disabled={!selectedRawTshirt || selectedRawTshirt.quantity === 0}
-            >
-              <ShoppingBag size={18} />
-              <p className="text-sm font-semibold">Add to Cart</p>
-            </button>
-            <button className='w-full bg-black text-white py-[10px] flex items-center justify-center gap-[10px]'>
+                onClick={handleAddToCart}
+                disabled={!selectedRawTshirt || selectedRawTshirt.quantity === 0}
+              >
+                <ShoppingBag size={18} />
+                <p className="text-sm font-semibold">Add to Cart</p>
+              </button>
+            </div>
+            {/* <button className='w-full bg-black text-white py-[10px] flex items-center justify-center gap-[10px]'>
               <p className='text-sm font-semibold'>Buy Now</p>
-            </button>
+              </button> */}
           </div>
           <div className="shipping text-gray-500 flex flex-col items-start justify-start gap-2">
             <p className="text-sm font-bold">Shipping</p>
             <div className="text-xs flex flex-col items-start justify-start gap-1">
-              <p>• <b>Cash on Delivery (COD):</b> ₹50</p>
-              <p>• <b>Prepaid Orders:</b> ₹30</p>
+              {/* <p>• <b>Cash on Delivery (COD):</b> ₹50</p>
+              <p>• <b>Prepaid Orders:</b> ₹30</p> */}
               <p>• <b>Delivery Timeline:</b> 4 to 7 working days</p>
             </div>
           </div>
+          <p className="text-xs text-black-500"><b>About Product: </b>{product.description}</p>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
               <AccordionTrigger className="text-sm font-bold">Description</AccordionTrigger>

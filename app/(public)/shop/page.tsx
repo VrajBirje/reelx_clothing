@@ -19,7 +19,7 @@ const Page: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState<number>(1);
   const limit: number = 12; // Default limit
-  const [sortBy, setSortBy] = useState<string>("desc"); // Default sorting
+  const [sortBy, setSortBy] = useState<string>(""); // Default sorting
   const [category, setCategory] = useState<string>(""); // Default category
   const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false); // Loading state
@@ -87,6 +87,7 @@ const Page: React.FC = () => {
               setPage(1); // Reset to page 1 when sorting changes
             }}
           >
+            <option value="">Best for you</option>
             <option value="desc">Price (High to Low)</option>
             <option value="asc">Price (Low to High)</option>
           </select>

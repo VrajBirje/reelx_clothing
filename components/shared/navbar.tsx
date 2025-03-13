@@ -47,7 +47,7 @@ export const Navbar = () => {
         <Sidebar />
         <Link href='/' className='navlogo flex items-center justify-center gap-3'>
           <div className='navlogo2 h-11 aspect-[3/2] relative'>
-            <Image src="/logo.png" alt="" className='absolute' fill={true} />
+            <Image src="/LogoSVG.svg" alt="" className='absolute' fill={true} />
           </div>
           <p className='navlogo1 text-3xl font-medium'>Reelx.</p>
         </Link>

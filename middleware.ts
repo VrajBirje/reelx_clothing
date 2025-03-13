@@ -5,7 +5,6 @@ export default authMiddleware({
     "/",
     "/shop",
     "/about",
-    "/cart",
     "/privacy-policy",
     "/terms",
     "/api/webhook",

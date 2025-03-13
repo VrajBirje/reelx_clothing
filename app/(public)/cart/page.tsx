@@ -17,6 +17,7 @@ interface UserData {
 }
 
 interface CartItem {
+  cart_id: string;
   product_id: number;
   name: string;
   color: string;
@@ -40,11 +41,12 @@ const Page = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<{ [key: number]: boolean }>({});
   const [loadingStates, setLoadingStates] = useState<{ [key: number]: boolean }>({});
+  const [loadingStates2, setLoadingStates2] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online'>('online');
-  const [deleteModal, setDeleteModal] = useState<{ show: boolean; product_id: number | null }>({
+  const [deleteModal, setDeleteModal] = useState<{ show: boolean; cart_id: string | null }>({
     show: false,
-    product_id: null,
+    cart_id: null,
   });
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
@@ -70,8 +72,8 @@ const Page = () => {
           const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/orders/orders/${userData.id}`);
           // Check for exact structure: { success: true, data: [] }
           setIsNewUser(
-            response.data.success === true && 
-            Array.isArray(response.data.data) && 
+            response.data.success === true &&
+            Array.isArray(response.data.data) &&
             response.data.data.length === 0
           );
         } catch (error) {
@@ -164,7 +166,7 @@ const Page = () => {
   };
 
   // Update Cart Quantity API Call
-  const updateCartQuantity = async (product_id: number, size: string, quantity: number) => {
+  const updateCartQuantity = async (cart_id: string, product_id: number, size: string, quantity: number) => {
     if (!userData) return;
 
     setLoadingStates((prev) => ({ ...prev, [product_id]: true }));
@@ -175,12 +177,14 @@ const Page = () => {
         product_id,
         size,
         quantity,
+        cart_id, // Ensure cart_id is passed correctly
       });
 
       if (response.data.success) {
+        // Update only the specific cart item using cart_id
         setCartItems((prev) =>
           prev.map((item) =>
-            item.product_id === product_id ? { ...item, quantity } : item
+            item.cart_id === cart_id ? { ...item, quantity } : item
           )
         );
       } else {
@@ -191,27 +195,29 @@ const Page = () => {
       alert("Failed to update quantity");
     } finally {
       setLoadingStates((prev) => ({ ...prev, [product_id]: false }));
+      setCouponCode("");
+      setDiscountedAmount(0);
     }
   };
 
   const deleteCartItem = async () => {
-    if (!userData || deleteModal.product_id === null) return;
+    if (!userData || deleteModal.cart_id === null) return; // Use cart_id instead of product_id
 
-    setLoadingStates((prev) => ({ ...prev, [deleteModal.product_id!]: true }));
+    setLoadingStates2((prev) => ({ ...prev, [deleteModal.cart_id!]: true })); // Use cart_id for loading state
 
     try {
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/cart/cart/remove`, {
         data: {
-          customer_id: userData.id,
-          product_id: deleteModal.product_id,
+          cart_id: deleteModal.cart_id, // Pass cart_id instead of product_id
         },
       });
 
       if (response.data.success) {
+        // Update the cart items state by removing the deleted item using cart_id
         setCartItems((prev) =>
-          prev.filter((item) => item.product_id !== deleteModal.product_id)
+          prev.filter((item) => item.cart_id !== deleteModal.cart_id)
         );
-        setDeleteModal({ show: false, product_id: null });
+        setDeleteModal({ show: false, cart_id: null }); // Reset cart_id in the modal state
       } else {
         alert(response.data.message);
       }
@@ -219,17 +225,20 @@ const Page = () => {
       console.error("Error deleting cart item:", error);
       alert("Failed to delete item");
     } finally {
-      setLoadingStates((prev) => ({ ...prev, [deleteModal.product_id!]: false }));
+      setLoadingStates2((prev) => ({ ...prev, [deleteModal.cart_id!]: false })); // Use cart_id for loading state
+      setCouponCode("");
+      setDiscountedAmount(0);
     }
   };
 
-  const codCharge = paymentMethod === 'cod' ? 50.0 : 0;
+  const codCharge = paymentMethod === 'cod' ? 20.0 : 0;
+  const shippingCharge = 50;
 
   // Calculate total price
   const productTotal = cartItems.reduce((total, product) => total + product.discountedprice * product.quantity, 0);
 
   // Calculate final amount
-  const finalAmount = productTotal + codCharge - discountedAmount;
+  const finalAmount = productTotal + shippingCharge + codCharge - discountedAmount;
 
   // Update the checkout button click handler
   const handleCheckoutClick = () => {
@@ -282,7 +291,7 @@ const Page = () => {
         <p>{cartItems.length} items</p>
       </div>
       <div className="cartlr w-full flex justify-between items-start">
-        <div className="w-[60%] flex flex-col">
+        <div className="sm:w-[60%] w-full  flex flex-col">
           <div className="cartleft products w-full border border-black">
             {cartItems.map((product) => (
               <div className="w-full relative" key={product.product_id}>
@@ -303,7 +312,7 @@ const Page = () => {
                           size={18}
                           color="gray"
                           className="cursor-pointer"
-                          onClick={() => setDeleteModal({ show: true, product_id: product.product_id })}
+                          onClick={() => setDeleteModal({ show: true, cart_id: product.cart_id })}
                         />
                       </div>
                       <p className="cardcardamount2 text-sm font-light">
@@ -335,7 +344,7 @@ const Page = () => {
                             value={product.quantity}
                             disabled={loadingStates[product.product_id]}
                             onChange={(e) =>
-                              updateCartQuantity(product.product_id, product.size, parseInt(e.target.value))
+                              updateCartQuantity(product.cart_id, product.product_id, product.size, parseInt(e.target.value))
                             }
                           >
                             {Array.from({ length: product.raw_tshirt.quantity }, (_, i) => i + 1).map((num) => (
@@ -346,12 +355,12 @@ const Page = () => {
                           </select>
                           {loadingStates[product.product_id] && <span className="text-xs text-gray-500 ml-2">Updating...</span>}
                         </div>
-                        <Trash2
+                        {/* <Trash2
                           size={18}
                           color="gray"
                           className="cursor-pointer"
                           onClick={() => setDeleteModal({ show: true, product_id: product.product_id })}
-                        />
+                        /> */}
                       </div>
                       <p className="cartcardamount text-sm font-light">
                         ₹ {(product.discountedprice * product.quantity).toFixed(2)}
@@ -384,7 +393,8 @@ const Page = () => {
                   onChange={() => setPaymentMethod('online')}
                 />
                 <div className="flex items-center gap-1">
-                  <CreditCard size={14} />
+                  {/* <CreditCard size={14} /> */}
+                  <Image src='/assets/cashless.png' alt="card" height={34} width={34}></Image>
                   <div>
                     <p className='text-xs font-semibold'>Online Payment</p>
                     <p className='text-xs text-gray-600'>Pay securely</p>
@@ -402,10 +412,11 @@ const Page = () => {
                   onChange={() => setPaymentMethod('cod')}
                 />
                 <div className="flex items-center gap-1">
-                  <Banknote size={14} />
+                  {/* <Banknote size={14} /> */}
+                  <Image src='/assets/money.png' alt="cash" height={34} width={34}></Image>
                   <div>
                     <p className='text-xs font-semibold'>Cash on Delivery</p>
-                    <p className='text-xs text-gray-600'>+₹50 charge</p>
+                    <p className='text-xs text-gray-600'>+₹20/- charge</p>
                   </div>
                 </div>
               </div>
@@ -416,8 +427,8 @@ const Page = () => {
             <p className='text-lg font-light mb-5'>Order Summary</p>
             <div className='w-full flex justify-between items-center text-sm font-semibold'>
               <p>Offers</p>
-              <p 
-                className='underline text-xs cursor-pointer' 
+              <p
+                className='underline text-xs cursor-pointer'
                 onClick={() => setIsCouponModalOpen(true)}
               >
                 {discountedAmount > 0 ? `Coupon Applied: ${couponCode}` : 'Apply Coupons'}
@@ -434,9 +445,13 @@ const Page = () => {
               <p>Sub-Total</p>
               <p>₹ {productTotal}</p>
             </div>
+            <div className='w-full flex justify-between items-center text-sm font-semibold'>
+              <p>Shipping</p>
+              <p>₹ {shippingCharge}</p>
+            </div>
             {paymentMethod === 'cod' && (
               <div className='w-full flex justify-between items-center text-sm font-semibold'>
-                <p>Shipping</p>
+                <p>COD charge</p>
                 <p>₹ {codCharge}</p>
               </div>
             )}
@@ -459,13 +474,13 @@ const Page = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Remove Item</h3>
-              <X className="cursor-pointer" onClick={() => setDeleteModal({ show: false, product_id: null })} />
+              <X className="cursor-pointer" onClick={() => setDeleteModal({ show: false, cart_id: null })} />
             </div>
             <p>Are you sure you want to remove this item from the cart?</p>
             <div className="mt-4 flex justify-end gap-3">
-              <button className="px-4 py-2 border rounded" onClick={() => setDeleteModal({ show: false, product_id: null })}>Cancel</button>
+              <button className="px-4 py-2 border rounded" onClick={() => setDeleteModal({ show: false, cart_id: null })}>Cancel</button>
               <button className="px-4 py-2 bg-red-600 text-white rounded" onClick={deleteCartItem}>
-                {loadingStates[deleteModal.product_id!] ? "Deleting..." : "Delete"}
+                {loadingStates2[deleteModal.cart_id!] ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>
@@ -507,7 +522,8 @@ const Page = () => {
         userPhone={userData?.phone || ''}
         subtotal={productTotal}
         discountedAmount={discountedAmount}
-        shippingCharges={codCharge}
+        shippingCharges={shippingCharge}
+        codCharge={codCharge}
         couponCode={couponCode}
         userEmail={userData?.email || ''}
         phone2={userData?.phone || ''}

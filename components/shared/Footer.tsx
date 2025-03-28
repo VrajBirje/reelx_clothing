@@ -11,6 +11,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import Image from 'next/image'
+import Link from 'next/link'
 
 export const Footer = () => {
     return (
@@ -38,9 +39,20 @@ export const Footer = () => {
                 {/* links */}
                 <div className='footerlinks flex w-[50%] justify-between gap-20'>
                     <div className='flex flex-col gap-[16px]'>
+                        <p className='text-sm font-bold'>Help and Support</p>
+                        <div className="flex flex-col gap-[8px]">
+                           <Link href="/"> <p className='text-xs font-light'>About</p> </Link>
+                           <Link href="/"> <p className='text-xs font-light'>Cancellation-Refund</p></Link>
+                           <Link href="/"> <p className='text-xs font-light'>Contact Us</p></Link>
+                           <Link href="/"> <p className='text-xs font-light'>Privacy Policy</p></Link>
+                           <Link href="/"> <p className='text-xs font-light'>Shipping Delivery</p></Link>
+                           <Link href="/"> <p className='text-xs font-light'>Terms and Conditions</p></Link>
+                        </div>
+                    </div>
+                    {/* <div className='flex flex-col gap-[16px]'>
                         <p className='text-sm font-bold'>Shop</p>
                         <div className="flex flex-col gap-[8px]">
-                            <p className='text-xs font-light'>Minimalist</p>
+                           <Link href="/"> <p className='text-xs font-light'>Minimalist</p> </Link>
                             <p className='text-xs font-light'>Gym Wear</p>
                             <p className='text-xs font-light'>Plain</p>
                             <p className='text-xs font-light'>New Arrival</p>
@@ -66,7 +78,7 @@ export const Footer = () => {
                             <p className='text-xs font-light'>Payment Options</p>
                             <p className='text-xs font-light'>Offers & Deals</p>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <Accordion type="single" collapsible className="w-full footerlinks2">
                     <AccordionItem value="item-1">

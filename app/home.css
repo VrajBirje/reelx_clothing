@@ -1,4 +1,4 @@
-.home {
+/* .home {
     max-width: 1280px;
 }
 
@@ -12,12 +12,8 @@
     }
     .homeimg{
         flex-direction: column;
-        /* flex-wrap: wrap; */
         width: 100vw;
         margin: 20px 0;
-        /* height: fit-content; */
-        /* justify-content: center; */
-        /* align-items: center; */
         gap: 10px;
     }
     .homeimg1{
@@ -32,4 +28,67 @@
         display: none;
     }
 
-}
+} */
+ 
+/* Custom scrollbar hiding */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* Smooth transitions */
+  .transition-all {
+    transition: all 0.3s ease;
+  }
+  
+  /* Truncate text with ellipsis */
+  .truncate-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Hover effects */
+  .hover-scale {
+    transition: transform 0.3s ease;
+  }
+  
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Animation for category titles */
+  .hometop {
+    position: relative;
+  }
+  
+  .hometop::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background-color: #000;
+    transition: width 0.3s ease;
+  }
+  
+  .hometop:hover::after {
+    width: 50px;
+  }
+  
+  /* Card hover effects */
+  .cardbox {
+    transition: all 0.3s ease;
+  }
+  
+  .cardbox:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  

@@ -36,13 +36,13 @@ export const Navbar = () => {
     >
       <div className="nav1 flex justify-start items-center gap-5 w-[15vw]">
         <Link href='/shop'><p className='text-sm'>Shop</p></Link>
-        <p className='text-sm '>About</p>
-        <p className='text-sm'>Contact</p>
+        <Link href='/about'><p className='text-sm'>About</p></Link>
+        <Link href='/contact-us'><p className='text-sm'>Contact</p></Link>
       </div>
 
 
       {/* center section */}
-      <div className='flex items-center justify-center gap-3' >
+      <div className="flex justify-center gap-3 sm:fixed sm:inset-x-0 sm:mx-auto sm:w-fit">
         {/* <Menu size={26} strokeWidth={1.5} className='navmenu mr-2' /> */}
         <Sidebar />
         <Link href='/' className='navlogo flex items-center justify-center gap-3'>
@@ -55,10 +55,11 @@ export const Navbar = () => {
 
       {/* left section  */}
       <div className='navleft flex items-center justify-end gap-6'>
-        <Search className='navlogo3' strokeWidth={1.5} />
+        {/* <Search className='navlogo3' strokeWidth={1.5} /> */}
         <Link className='navpro' href='/profile'><User size={26} strokeWidth={1.5} /></Link>
         <Link href='/wishlist'><Heart size={26} strokeWidth={1.5} /></Link>
         <Link href='/cart'><ShoppingCart size={26} strokeWidth={1.5} /></Link>
+        
       </div>
     </nav>
   );

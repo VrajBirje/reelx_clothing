@@ -77,6 +77,7 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 const images = ["/assets/img1.png", "/assets/img2.png", "/assets/img3.png"]
 
@@ -102,6 +103,7 @@ const variants = {
 }
 
 const Carousel = () => {
+  const router = useRouter()
   const [[page, direction], setPage] = useState([0, 0])
   const [isHovered, setIsHovered] = useState(false)
 
@@ -169,6 +171,7 @@ const Carousel = () => {
                     whileHover={{ scale: 1.05, backgroundColor: "#fff", color: "#000" }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-black text-white border-2 border-white px-8 py-3 text-lg font-medium tracking-wider transition-all duration-300"
+                    onClick={() => router.push('/shop')}
                   >
                     SHOP NOW
                   </motion.button>

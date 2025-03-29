@@ -41,12 +41,12 @@ export const Footer = () => {
                     <div className='flex flex-col gap-[16px]'>
                         <p className='text-sm font-bold'>Help and Support</p>
                         <div className="flex flex-col gap-[8px]">
-                            <Link href="/"> <p className='text-xs font-light'>About</p> </Link>
-                            <Link href="/"> <p className='text-xs font-light'>Cancellation-Refund</p></Link>
-                            <Link href="/"> <p className='text-xs font-light'>Contact Us</p></Link>
-                            <Link href="/"> <p className='text-xs font-light'>Privacy Policy</p></Link>
-                            <Link href="/"> <p className='text-xs font-light'>Shipping Delivery</p></Link>
-                            <Link href="/"> <p className='text-xs font-light'>Terms and Conditions</p></Link>
+                            <Link href="/about"> <p className='text-xs font-light'>About</p> </Link>
+                            <Link href="/cancellation-refund"> <p className='text-xs font-light'>Cancellation-Refund</p></Link>
+                            <Link href="/contact-us"> <p className='text-xs font-light'>Contact Us</p></Link>
+                            <Link href="/privacy-policy"> <p className='text-xs font-light'>Privacy Policy</p></Link>
+                            <Link href="/shipping-delivery"> <p className='text-xs font-light'>Shipping Delivery</p></Link>
+                            <Link href="/terms-and-conditions"> <p className='text-xs font-light'>Terms and Conditions</p></Link>
                         </div>
                     </div>
                     {/* <div className='flex flex-col gap-[16px]'>
@@ -104,12 +104,12 @@ export const Footer = () => {
                                 <p className='text-sm font-light'>Terms of Service</p>
                             </div> */}
                             <div className="flex flex-col gap-[8px]">
-                                <Link href="/"> <p className='text-xs font-light'>About</p> </Link>
-                                <Link href="/"> <p className='text-xs font-light'>Cancellation-Refund</p></Link>
-                                <Link href="/"> <p className='text-xs font-light'>Contact Us</p></Link>
-                                <Link href="/"> <p className='text-xs font-light'>Privacy Policy</p></Link>
-                                <Link href="/"> <p className='text-xs font-light'>Shipping Delivery</p></Link>
-                                <Link href="/"> <p className='text-xs font-light'>Terms and Conditions</p></Link>
+                                <Link href="/about"> <p className='text-xs font-light'>About</p> </Link>
+                                <Link href="/cancellation-refund"> <p className='text-xs font-light'>Cancellation-Refund</p></Link>
+                                <Link href="/contact-us"> <p className='text-xs font-light'>Contact Us</p></Link>
+                                <Link href="/privacy-policy"> <p className='text-xs font-light'>Privacy Policy</p></Link>
+                                <Link href="/shipping-delivery"> <p className='text-xs font-light'>Shipping Delivery</p></Link>
+                                <Link href="/terms-and-conditions"> <p className='text-xs font-light'>Terms and Conditions</p></Link>
                             </div>
                         </AccordionContent>
                     </AccordionItem>

@@ -19,7 +19,7 @@ export const Footer = () => {
             <div className='footer w-full flex flex justify-center items-start py-20 md:pt-24 2xl:max-w-screen-xl mx-auto w-full'>
                 <div className="footer1 flex flex-col w-[50%] items-start gap-[20px] h-full justify-between">
                     <div className="flex items-center justify-center gap-3">
-                        <div  className="h-11 aspect-[3/2] relative" >
+                        <div className="h-11 aspect-[3/2] relative" >
                             <Image src="/logo.jpg" alt="" fill={true} className="absolute" />
                         </div>
                         <p className="text-3xl font-medium">Reelx.</p>
@@ -41,12 +41,12 @@ export const Footer = () => {
                     <div className='flex flex-col gap-[16px]'>
                         <p className='text-sm font-bold'>Help and Support</p>
                         <div className="flex flex-col gap-[8px]">
-                           <Link href="/"> <p className='text-xs font-light'>About</p> </Link>
-                           <Link href="/"> <p className='text-xs font-light'>Cancellation-Refund</p></Link>
-                           <Link href="/"> <p className='text-xs font-light'>Contact Us</p></Link>
-                           <Link href="/"> <p className='text-xs font-light'>Privacy Policy</p></Link>
-                           <Link href="/"> <p className='text-xs font-light'>Shipping Delivery</p></Link>
-                           <Link href="/"> <p className='text-xs font-light'>Terms and Conditions</p></Link>
+                            <Link href="/"> <p className='text-xs font-light'>About</p> </Link>
+                            <Link href="/"> <p className='text-xs font-light'>Cancellation-Refund</p></Link>
+                            <Link href="/"> <p className='text-xs font-light'>Contact Us</p></Link>
+                            <Link href="/"> <p className='text-xs font-light'>Privacy Policy</p></Link>
+                            <Link href="/"> <p className='text-xs font-light'>Shipping Delivery</p></Link>
+                            <Link href="/"> <p className='text-xs font-light'>Terms and Conditions</p></Link>
                         </div>
                     </div>
                     {/* <div className='flex flex-col gap-[16px]'>
@@ -81,7 +81,7 @@ export const Footer = () => {
                     </div> */}
                 </div>
                 <Accordion type="single" collapsible className="w-full footerlinks2">
-                    <AccordionItem value="item-1">
+                    {/* <AccordionItem value="item-1">
                         <AccordionTrigger>Shop</AccordionTrigger>
                         <AccordionContent>
                             <div className="flex flex-col gap-[8px]">
@@ -92,20 +92,28 @@ export const Footer = () => {
                                 <p className='text-sm font-light'>Discounts</p>
                             </div>
                         </AccordionContent>
-                    </AccordionItem>
+                    </AccordionItem> */}
                     <AccordionItem value="item-2">
                         <AccordionTrigger>Help & Support</AccordionTrigger>
                         <AccordionContent>
-                            <div className="flex flex-col gap-[8px]">
+                            {/* <div className="flex flex-col gap-[8px]">
                                 <p className='text-sm font-light'>About</p>
                                 <p className='text-sm font-light'>Contact us</p>
                                 <p className='text-sm font-light'>Size Chart</p>
                                 <p className='text-sm font-light'>FAQs</p>
                                 <p className='text-sm font-light'>Terms of Service</p>
+                            </div> */}
+                            <div className="flex flex-col gap-[8px]">
+                                <Link href="/"> <p className='text-xs font-light'>About</p> </Link>
+                                <Link href="/"> <p className='text-xs font-light'>Cancellation-Refund</p></Link>
+                                <Link href="/"> <p className='text-xs font-light'>Contact Us</p></Link>
+                                <Link href="/"> <p className='text-xs font-light'>Privacy Policy</p></Link>
+                                <Link href="/"> <p className='text-xs font-light'>Shipping Delivery</p></Link>
+                                <Link href="/"> <p className='text-xs font-light'>Terms and Conditions</p></Link>
                             </div>
                         </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-3">
+                    {/* <AccordionItem value="item-3">
                         <AccordionTrigger>Orders</AccordionTrigger>
                         <AccordionContent>
                             <div className="flex flex-col gap-[8px]">
@@ -116,7 +124,7 @@ export const Footer = () => {
                                 <p className='text-sm font-light'>Offers & Deals</p>
                             </div>
                         </AccordionContent>
-                    </AccordionItem>
+                    </AccordionItem> */}
                 </Accordion>
                 <div className='footersocial flex items-center justify-center gap-4 w-full '>
                     <FaFacebook size={24} />

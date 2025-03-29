@@ -31,8 +31,8 @@ const menuItems = [
   { name: "Shop", icon: Shirt },
   { name: "Profile", icon: User },
   { name: "About", icon: Info },
-  { name: "Contact", icon: Phone },
-  { name: "Logout", icon: LogOut },
+  // { name: "Contact", icon: Phone },
+  // { name: "Logout", icon: LogOut },
 ];
 
 export const Links = () => {

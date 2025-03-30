@@ -111,7 +111,7 @@ const SizeChart = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        <p className="mb-2">• Model is 6'2" (188cm) wearing size L</p>
+        <p className="mb-2">• Model is 6&apos;2&quot; (188cm) wearing size L</p>
         <p>• Measurements may vary by ±0.5{activeTab === 'inches' ? ' inches' : ' cm'}</p>
       </motion.div>
     </div>

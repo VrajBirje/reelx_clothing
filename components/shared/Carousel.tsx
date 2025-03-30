@@ -79,7 +79,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 
-const images = ["/assets/img1.png", "/assets/img2.png", "/assets/img3.png"]
+const images = ["/assets/banner1.jpg", "/assets/banner1.jpg", "/assets/banner1.jpg"]
 
 const variants = {
   enter: (direction: number) => {

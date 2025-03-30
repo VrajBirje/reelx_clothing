@@ -82,7 +82,7 @@ const HomePage = () => {
     <div className={`pt-28 md:pt-24 w-full ${textFont.className}`}>
       <Carousel />
 
-      <motion.div
+      {/* <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -151,7 +151,7 @@ const HomePage = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <Trending title="BEST SELLING" />
-      </motion.div>
+      </motion.div> */}
 
       <motion.div
         initial={{ opacity: 0 }}

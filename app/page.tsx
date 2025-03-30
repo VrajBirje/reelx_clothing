@@ -50,9 +50,9 @@ import "./home.css"
 import { useRouter } from "next/navigation";
 
 const images = [
-  { src: "/assets/gym.jpg", name: "MILLIONAIRE" },
-  { src: "/assets/plain.jpg", name: "PORSCHE" },
-  { src: "/assets/newA.jpg", name: "ANIME" },
+  { src: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342107/17_r3tdtj.png", name: "MILLIONAIRE" },
+  { src: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342098/22_rdghwl.png", name: "PORSCHE" },
+  { src: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342103/11_kvk30t.png", name: "ANIME" },
 ]
 
 const textFont = Poppins({
@@ -82,7 +82,7 @@ const HomePage = () => {
     <div className={`pt-28 md:pt-24 w-full ${textFont.className}`}>
       <Carousel />
 
-      {/* <motion.div
+      <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -151,7 +151,7 @@ const HomePage = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <Trending title="BEST SELLING" />
-      </motion.div> */}
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}

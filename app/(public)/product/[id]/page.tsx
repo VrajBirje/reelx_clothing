@@ -178,6 +178,17 @@ const Page = () => {
   if (loading) return <div className="h-screen flex items-center justify-center"><FlyingBird /></div>;
   if (!product) return <p>Product not found</p>;
 
+  const handleShare = async () => {
+    try {
+      const productUrl = `${window.location.origin}/product/${product?.product_id}`;
+      await navigator.clipboard.writeText(productUrl);
+      toast.success('Product link copied to clipboard!');
+    } catch (error) {
+      toast.error('Failed to copy link');
+      console.error('Error copying to clipboard:', error);
+    }
+  };
+
   return (
     <div className='productmain flex py-[20px] justify-center bg-white px-[4%] w-full flex-col items-center gap-[10px] '>
       <p className='text-xs font-medium'>Home / Shop / <b>{product.name}</b></p>
@@ -227,7 +238,7 @@ const Page = () => {
           <div className='size w-full flex flex-col gap-[20px]'>
             <div className='w-full flex justify-between'>
               <p className='text-sm font-semibold'>Sizes</p>
-              <div 
+              <div
                 className='flex items-center justify-center gap-[5px] underline cursor-pointer'
                 onClick={() => router.push('/size-chart')}
               >
@@ -332,7 +343,10 @@ const Page = () => {
             </AccordionItem>
           </Accordion>
           <div className="flex items-center justify-center mt-10">
-            <div className="flex py-3 px-10 border border-black w-[40%] items-center justify-center gap-[10px]">
+            <div
+              className="flex py-3 px-10 border border-black w-[40%] items-center justify-center gap-[10px] cursor-pointer"
+              onClick={handleShare}
+            >
               <Share2 size={16} />
               <p className="text-sm font-medium">Share</p>
             </div>

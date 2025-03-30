@@ -79,7 +79,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 
-const images = ["/assets/banner1.jpg", "/assets/banner1.jpg", "/assets/banner1.jpg"]
+const images = ["https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743346148/IMG_2959.JPEG_ssyr2p.jpg", "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743346123/IMG_2960.JPEG_vhuybv.jpg", "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743346123/IMG_2965.JPEG_f6coum.jpg"]
 
 const variants = {
   enter: (direction: number) => {

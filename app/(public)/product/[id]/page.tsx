@@ -48,6 +48,7 @@ const Page = () => {
   const [isInWishlist, setIsInWishlist] = useState(false);
   const customer_id = user?.id;
   const [selectedImage, setSelectedImage] = useState<string>("");
+  const [addingToCart, setAddingToCart] = useState(false);
 
   useEffect(() => {
     if (!customer_id || !product) return;
@@ -143,6 +144,7 @@ const Page = () => {
     }
 
     const customer_id = user.id;
+    setAddingToCart(true);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, {
@@ -168,6 +170,8 @@ const Page = () => {
     } catch (error) {
       console.error("Error adding to cart:", error);
       toast.error("Something went wrong!");
+    } finally {
+      setAddingToCart(false);
     }
   };
 
@@ -176,19 +180,27 @@ const Page = () => {
 
   return (
     <div className='productmain flex py-[20px] justify-center bg-white px-[4%] w-full flex-col items-center gap-[10px] '>
-      <p className='text-xs font-medium'>Home / Shop / Gym-Wear / <b>{product.name}</b></p>
+      <p className='text-xs font-medium'>Home / Shop / <b>{product.name}</b></p>
       <div className='productmain2 w-full flex items-start justify-center mt-[20px] gap-[20px]'>
         <div className='productimgbox w-[68%] flex flex-wrap overflow-y-auto'>
-          <div className='productimg1 relative w-[50%]'><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
-          <div className='productimg1 relative w-[50%]'><Image src={product.images[1]} className='absolute' alt="" fill={true} /></div>
-          <div className='productimg1 relative w-[50%]'><Image src={product.images[2]} className='absolute' alt="" fill={true} /></div>
+          {product.images.map((image, index) => (
+            <div key={index} className='productimg1 relative w-[50%]'>
+              <Image src={image} className='absolute' alt="" fill={true} />
+            </div>
+          ))}
         </div>
         <div className='productimgbox2 w-[100%] flex flex-col '>
           <div className='productimg1 relative h-[50vh] w-[100%]'><Image src={selectedImage} className='absolute' alt="" fill={true} /></div>
           <div className="flex w-[100%] items-center justify-start p-[10px] gap-[10px]">
-            <div className='productimg12 relative w-[60px] h-[70px] cursor-pointer' onClick={() => setSelectedImage(product.images[0])}><Image src={product.images[0]} className='absolute' alt="" fill={true} /></div>
-            <div className='productimg12 relative w-[60px] h-[70px] cursor-pointer' onClick={() => setSelectedImage(product.images[1])}><Image src={product.images[1]} className='absolute' alt="" fill={true} /></div>
-            <div className='productimg12 relative w-[60px] h-[70px] cursor-pointer' onClick={() => setSelectedImage(product.images[2])}><Image src={product.images[2]} className='absolute' alt="" fill={true} /></div>
+            {product.images.map((image, index) => (
+              <div
+                key={index}
+                className='productimg12 relative w-[60px] h-[70px] cursor-pointer'
+                onClick={() => setSelectedImage(image)}
+              >
+                <Image src={image} className='absolute' alt="" fill={true} />
+              </div>
+            ))}
           </div>
         </div>
         <div className='productinfo flex flex-col gap-[20px]'>
@@ -202,6 +214,8 @@ const Page = () => {
             />
 
           </div>
+          <p className='text-xs font-semibold text-gray-500'>{product.description}</p>
+
           <div className='flex flex-col items-start jusify-center gap-[5px]'>
             <div className="prices w-full flex items-center justify-start gap-[20px]">
               <p className='text-2xl text-black font-semibold'>Rs. {product.discountedprice}</p>
@@ -213,7 +227,10 @@ const Page = () => {
           <div className='size w-full flex flex-col gap-[20px]'>
             <div className='w-full flex justify-between'>
               <p className='text-sm font-semibold'>Sizes</p>
-              <div className='flex items-center justify-center gap-[5px] underline'>
+              <div 
+                className='flex items-center justify-center gap-[5px] underline cursor-pointer'
+                onClick={() => router.push('/size-chart')}
+              >
                 <Ruler size={14} />
                 <p className='text-xs font-semibold'>Size Chart</p>
               </div>
@@ -240,10 +257,16 @@ const Page = () => {
                 className="w-full border border-black py-[10px] flex items-center justify-center gap-[10px]
               disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
                 onClick={handleAddToCart}
-                disabled={!selectedRawTshirt || selectedRawTshirt.quantity === 0}
+                disabled={!selectedRawTshirt || selectedRawTshirt.quantity === 0 || addingToCart}
               >
-                <ShoppingBag size={18} />
-                <p className="text-sm font-semibold">Add to Cart</p>
+                {addingToCart ? (
+                  <FlyingBird />
+                ) : (
+                  <>
+                    <ShoppingBag size={18} />
+                    <p className="text-sm font-semibold">Add to Cart</p>
+                  </>
+                )}
               </button>
             </div>
             {/* <button className='w-full bg-black text-white py-[10px] flex items-center justify-center gap-[10px]'>

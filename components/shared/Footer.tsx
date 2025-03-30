@@ -1,9 +1,9 @@
-import { Logo } from '@/components/logo'
-import { Button } from '@/components/ui/button'
-import { Linkedin } from 'lucide-react'
+// import { Logo } from '@/components/logo'
+// import { Button } from '@/components/ui/button'
+// import { Linkedin } from 'lucide-react'
 import React from 'react'
-import { FaFacebook, FaInstagram, FaLinkedin, FaPinterest, FaTwitter } from 'react-icons/fa'
-import { Input } from '../ui/input'
+import { FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa'
+// import { Input } from '../ui/input'
 import {
     Accordion,
     AccordionContent,
@@ -19,8 +19,8 @@ export const Footer = () => {
             <div className='footer w-full flex flex justify-center items-start py-20 md:pt-24 2xl:max-w-screen-xl mx-auto w-full'>
                 <div className="footer1 flex flex-col w-[50%] items-start gap-[20px] h-full justify-between">
                     <div className="flex items-center justify-center gap-3">
-                        <div className="h-11 aspect-[3/2] relative" >
-                            <Image src="/logo.jpg" alt="" fill={true} className="absolute" />
+                        <div className="h-11 aspect-[2/2] relative" >
+                            <Image src="/reelxlogo2.jpg" alt="" fill={true} className="absolute" />
                         </div>
                         <p className="text-3xl font-medium">Reelx.</p>
                     </div>
@@ -28,11 +28,12 @@ export const Footer = () => {
                         Experience ultimate comfort and style with our exclusive collection of oversized t-shirts. Perfectly crafted for a relaxed fit, our tees redefine everyday fashion with effortless flair
                     </p>
                     <div className='flex footersocial2 gap-3'>
-                        <FaFacebook size={24} />
-                        <FaInstagram size={24} />
-                        <FaPinterest size={24} />
-                        <FaTwitter size={24} />
-                        <FaLinkedin size={24} />
+                        <a href="https://www.instagram.com/reelx_clothing?igsh=bTdlZHhienhwYXB0"><FaInstagram size={24} /></a>
+                        <a href="https://x.com/reelxclothe?t=Y7kb5QCQZciQNUrg3Ne-MQ&s=09"><FaTwitter size={24} /></a>
+                        <a href="https://www.linkedin.com/company/reelx-clothing-llp/"><FaLinkedin size={24} /></a>
+                        {/* <FaFacebook size={24} /> */}
+                        {/* <FaTwitter size={24} />
+                        <FaLinkedin size={24} /> */}
                     </div>
                 </div>
 
@@ -127,11 +128,9 @@ export const Footer = () => {
                     </AccordionItem> */}
                 </Accordion>
                 <div className='footersocial flex items-center justify-center gap-4 w-full '>
-                    <FaFacebook size={24} />
-                    <FaInstagram size={24} />
-                    <FaPinterest size={24} />
-                    <FaTwitter size={24} />
-                    <FaLinkedin size={24} />
+                    <a href="https://www.instagram.com/reelx_clothing?igsh=bTdlZHhienhwYXB0"><FaInstagram size={24} /></a>
+                    <a href="https://x.com/reelxclothe?t=Y7kb5QCQZciQNUrg3Ne-MQ&s=09"><FaTwitter size={24} /></a>
+                    <a href="https://www.linkedin.com/company/reelx-clothing-llp/"><FaLinkedin size={24} /></a>
                 </div>
             </div>
         </footer>

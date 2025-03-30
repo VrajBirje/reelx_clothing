@@ -73,9 +73,10 @@ const Page: React.FC = () => {
             }}
           >
             <option value="">All Categories</option>
-            <option value="1">Minimals</option>
-            <option value="1">Street Wear</option>
-            <option value="2">Combos</option>
+            <option value="1">Plain</option>
+            <option value="2">Sports</option>
+            <option value="3">Money</option>
+            <option value="4">Anime</option>
           </select>
 
           {/* Sorting Filter */}

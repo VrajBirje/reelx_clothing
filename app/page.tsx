@@ -45,14 +45,14 @@
 import { Poppins } from "next/font/google"
 import { motion } from "framer-motion"
 import Carousel from "@/components/shared/Carousel"
-// import Trending from "@/components/shared/trending"
+import Trending from "@/components/shared/trending"
 import "./home.css"
 import { useRouter } from "next/navigation";
 
 const images = [
-  { src: "/assets/gym.jpg", name: "GYM WEAR" },
-  { src: "/assets/plain.jpg", name: "MINIMAL DRIP" },
-  { src: "/assets/newA.jpg", name: "NEW ARRIVALS" },
+  { src: "/assets/gym.jpg", name: "MILLIONAIRE" },
+  { src: "/assets/plain.jpg", name: "PORSCHE" },
+  { src: "/assets/newA.jpg", name: "ANIME" },
 ]
 
 const textFont = Poppins({
@@ -82,7 +82,7 @@ const HomePage = () => {
     <div className={`pt-28 md:pt-24 w-full ${textFont.className}`}>
       <Carousel />
 
-      {/* <motion.div
+      <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -131,16 +131,16 @@ const HomePage = () => {
             </motion.div>
           ))}
         </motion.div>
-      </motion.div> */}
+      </motion.div>
 
-      {/* <motion.div
+      <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
         variants={fadeInUp}
         transition={{ duration: 0.5 }}
       >
-        <Trending  />
+        <Trending title="TRENDING"   />
       </motion.div>
 
       <motion.div
@@ -150,8 +150,8 @@ const HomePage = () => {
         variants={fadeInUp}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Trending  />
-      </motion.div> */}
+        <Trending title="BEST SELLING" />
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}

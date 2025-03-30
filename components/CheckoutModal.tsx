@@ -184,7 +184,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     try {
       // Show loading animation
       setLoading(true);
-      
+
       const selectedAddressData = addresses.find(addr => addr.address_id === selectedAddress);
       if (!selectedAddressData) {
         throw new Error('No address selected');
@@ -238,9 +238,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       setLoading(false);
     }
   };
-
-  const initiateRazorpayPayment = async (finalAmount: number) => {
+  const initiateRazorpayPayment = async (finalAmount: number, isLiveMode: boolean = false) => {
     try {
+      // Determine which API key to use based on mode
+      const razorpayKey = isLiveMode
+        ? process.env.NEXT_PUBLIC_RAZORPAY_LIVE_KEY_ID
+        : process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+
+      if (!razorpayKey) {
+        throw new Error(isLiveMode
+          ? 'Live Razorpay key is not configured'
+          : 'Razorpay key is not configured');
+      }
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment/create-order`, {
         method: 'POST',
         headers: {
@@ -250,6 +260,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           amount: finalAmount,
           currency: 'INR',
           receipt: `order_${Date.now()}`,
+          isLiveMode: isLiveMode // Send mode to backend if needed for verification
         }),
       });
 
@@ -260,7 +271,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }
 
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: razorpayKey,
         amount: order.amount,
         currency: order.currency,
         order_id: order.id,
@@ -269,27 +280,33 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         handler: async function (response: RazorpayResponse) {
           console.log('Payment successful!', response);
 
-          const verificationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment/verify-payment`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-              user_id: userId,
-              address_id: selectedAddress,
-              amount: finalAmount,
-            }),
-          });
+          try {
+            const verificationResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment/verify-payment`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                user_id: userId,
+                address_id: selectedAddress,
+                amount: finalAmount,
+                isLiveMode: isLiveMode // Important for backend to use correct secret key
+              }),
+            });
 
-          const verificationData = await verificationResponse.json();
+            const verificationData = await verificationResponse.json();
 
-          if (verificationData.status === 'success') {
-            toast.success('Payment verified successfully!');
-            await handleSuccessfulPayment(response.razorpay_payment_id);
-          } else {
+            if (verificationData.status === 'success') {
+              toast.success('Payment verified successfully!');
+              await handleSuccessfulPayment(response.razorpay_payment_id);
+            } else {
+              toast.error('Payment verification failed!');
+            }
+          } catch (verificationError) {
+            console.error('Verification error:', verificationError);
             toast.error('Payment verification failed!');
           }
         },
@@ -359,9 +376,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {addresses.map((address) => (
               <div
                 key={address.address_id}
-                className={`border p-4 rounded-lg ${
-                  selectedAddress === address.address_id ? 'border-black' : 'border-gray-200'
-                }`}
+                className={`border p-4 rounded-lg ${selectedAddress === address.address_id ? 'border-black' : 'border-gray-200'
+                  }`}
               >
                 <div className="flex items-start gap-3">
                   <input
@@ -398,8 +414,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <h3 className="text-lg font-semibold">
                   {showEditModal ? 'Edit Address' : 'Add New Address'}
                 </h3>
-                <X 
-                  className="cursor-pointer" 
+                <X
+                  className="cursor-pointer"
                   onClick={() => {
                     setShowAddModal(false);
                     setShowEditModal(false);
@@ -412,7 +428,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <input
                     type="text"
                     value={formData.address_line_1}
-                    onChange={(e) => setFormData({...formData, address_line_1: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, address_line_1: e.target.value })}
                     className="w-full border rounded-md p-2"
                     required
                   />
@@ -422,7 +438,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <input
                     type="text"
                     value={formData.address_line_2}
-                    onChange={(e) => setFormData({...formData, address_line_2: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, address_line_2: e.target.value })}
                     className="w-full border rounded-md p-2"
                   />
                 </div>
@@ -431,7 +447,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <input
                     type="text"
                     value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     className="w-full border rounded-md p-2"
                     required
                   />
@@ -441,7 +457,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <input
                     type="text"
                     value={formData.state}
-                    onChange={(e) => setFormData({...formData, state: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                     className="w-full border rounded-md p-2"
                     required
                   />
@@ -451,7 +467,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <input
                     type="text"
                     value={formData.pincode}
-                    onChange={(e) => setFormData({...formData, pincode: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
                     className="w-full border rounded-md p-2"
                     required
                   />

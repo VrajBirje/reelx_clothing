@@ -16,6 +16,7 @@ export default authMiddleware({
     "/contact-us",
     "/shipping-delivery",
     "/cancellation-refund",
+    "/size-chart"
   ],
   ignoredRoutes: [
     "/api/webhook"

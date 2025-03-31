@@ -57,8 +57,8 @@ const WishlistPage = () => {
               <CardBox
                 product_id={item.product_id}
                 name={item.name}
-                price={item.price}
-                discountedPrice={item.discountedprice}
+                price={item.discountedprice}
+                discountedPrice={item.price}
                 image={item.images[0]}
                 tag={item.tag}
                 onRemove={handleRemoveFromWishlist} // Pass function to update state

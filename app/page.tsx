@@ -50,9 +50,9 @@ import "./home.css"
 import { useRouter } from "next/navigation";
 
 const images = [
-  { src: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342107/17_r3tdtj.png", name: "MILLIONAIRE" },
-  { src: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342098/22_rdghwl.png", name: "PORSCHE" },
-  { src: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342103/11_kvk30t.png", name: "ANIME" },
+  { src: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342107/17_r3tdtj.png", name: "MILLIONAIRE", link:"/product/15" },
+  { src: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342098/22_rdghwl.png", name: "PORSCHE", link:"/product/10" },
+  { src: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342103/11_kvk30t.png", name: "ANIME", link:"/product/12" },
 ]
 
 const textFont = Poppins({
@@ -123,7 +123,7 @@ const HomePage = () => {
                   whileHover={{ scale: 1.05, backgroundColor: "#000", color: "#fff" }}
                   whileTap={{ scale: 0.95 }}
                   className="bg-white text-gray-800 py-2 px-6 text-sm font-bold tracking-wider rounded-sm transition-all duration-300 hover:shadow-lg"
-                  onClick={() => router.push("/shop")} // Navigate to /shop
+                  onClick={() => router.push(image.link)}
                 >
                   SHOP NOW
                 </motion.button>

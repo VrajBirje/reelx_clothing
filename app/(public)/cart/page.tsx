@@ -5,6 +5,7 @@ import "./cart.css";
 import axios from "axios";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import { useRouter } from 'next/navigation';
 import FlyingBird from "@/components/animatedLogo";
 import CheckoutModal from '@/components/CheckoutModal';
 
@@ -37,6 +38,7 @@ interface RazorpayResponse {
 }
 
 const Page = () => {
+  const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<{ [key: number]: boolean }>({});
@@ -230,7 +232,7 @@ const Page = () => {
       setDiscountedAmount(0);
     }
   };
-
+console.log(cartItems)
   const codCharge = paymentMethod === 'cod' ? 20.0 : 0;
   const shippingCharge = 50;
 
@@ -372,7 +374,7 @@ const Page = () => {
               </div>
             ))}
           </div>
-          <button className='w-full border text-md border-black flex items-center justify-center bg-black text-white py-2 gap-3 mt-5'>
+          <button className='w-full border text-md border-black flex items-center justify-center bg-black text-white py-2 gap-3 mt-5' onClick={() => router.push('/shop')}>
             <ShoppingBag /> <p>Continue Shopping</p>
           </button>
         </div>

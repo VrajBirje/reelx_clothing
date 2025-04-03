@@ -71,7 +71,7 @@ const Page = () => {
       setIsTransitioning(true)
 
       // Determine the new index
-      let newIndex
+      let newIndex: number
       if (isLeftSwipe) {
         // Swipe left - next image
         newIndex = currentImageIndex === product.images.length - 1 ? 0 : currentImageIndex + 1

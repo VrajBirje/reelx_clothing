@@ -285,7 +285,7 @@ const Page = () => {
             <div key={index} className="productimg1 relative w-[50%]">
               <Image
                 src={image || "/placeholder.svg"}
-                className="absolute"
+                className="absolute productimg1"
                 alt={product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -295,7 +295,7 @@ const Page = () => {
         </div>
         <div className="productimgbox2 w-[100%] flex flex-col">
           <div
-            className="productimg1 relative h-[50vh] w-[100%] overflow-hidden"
+            className=" relative h-[64vh] w-[100%] overflow-hidden"
             ref={imageContainerRef}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
@@ -323,11 +323,12 @@ const Page = () => {
                 >
                   <Image
                     src={image || "/placeholder.svg"}
-                    className=""
+                    className="productimg1"
                     alt={`${product.name} view ${index + 1}`}
                     fill
                     sizes="100vw"
                     priority={index === 0}
+                    style={{ objectFit: "contain" }}
                   />
                 </div>
               ))}

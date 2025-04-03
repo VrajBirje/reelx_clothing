@@ -285,7 +285,7 @@ const Page = () => {
             <div key={index} className="productimg1 relative w-[50%]">
               <Image
                 src={image || "/placeholder.svg"}
-                className="absolute object-cover"
+                className="absolute"
                 alt={product.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -323,7 +323,7 @@ const Page = () => {
                 >
                   <Image
                     src={image || "/placeholder.svg"}
-                    className="object-cover"
+                    className=""
                     alt={`${product.name} view ${index + 1}`}
                     fill
                     sizes="100vw"

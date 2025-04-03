@@ -8,14 +8,7 @@ import toast from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 import FlyingBird from "@/components/animatedLogo";
 import CheckoutModal from '@/components/CheckoutModal';
-
-interface UserData {
-  firstName: string;
-  lastName: string;
-  email: string | null;
-  phone: string | null;
-  id: string;
-}
+import { useUser } from "@clerk/nextjs";
 
 interface CartItem {
   cart_id: string;
@@ -27,8 +20,8 @@ interface CartItem {
   discountedprice: number;
   images: string[];
   quantity: number;
-  raw_tshirt: { quantity: number }; // Inventory quantity
-  isWishlisted?: boolean; // New field to track wishlist status
+  raw_tshirt: { quantity: number };
+  isWishlisted?: boolean;
 }
 
 interface RazorpayResponse {
@@ -39,7 +32,7 @@ interface RazorpayResponse {
 
 const Page = () => {
   const router = useRouter();
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const { user } = useUser();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<{ [key: number]: boolean }>({});
   const [loadingStates, setLoadingStates] = useState<{ [key: number]: boolean }>({});
@@ -58,21 +51,17 @@ const Page = () => {
   const [isLoadingCoupon, setIsLoadingCoupon] = useState(false);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("userData");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData) as UserData;
-      setUserData(parsedData);
-      fetchCartItems(parsedData.id);
-      fetchWishlist(parsedData.id);
+    if (user) {
+      fetchCartItems(user.id);
+      fetchWishlist(user.id);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const checkIfNewUser = async () => {
-      if (userData?.id) {
+      if (user?.id) {
         try {
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/orders/orders/${userData.id}`);
-          // Check for exact structure: { success: true, data: [] }
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/orders/orders/${user.id}`);
           setIsNewUser(
             response.data.success === true &&
             Array.isArray(response.data.data) &&
@@ -85,9 +74,8 @@ const Page = () => {
       }
     };
     checkIfNewUser();
-  }, [userData]);
+  }, [user]);
 
-  // Fetch Cart Items
   const fetchCartItems = async (userId: string) => {
     try {
       const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart/cart/${userId}`);
@@ -98,8 +86,7 @@ const Page = () => {
       setLoading(false);
     }
   };
-  // Rest of your component code remains the same...
-  // Fetch Wishlist
+
   const fetchWishlist = async (userId: string) => {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist/wishlist/${userId}`);
@@ -117,26 +104,9 @@ const Page = () => {
     }
   };
 
-  if (loading) {
-    return <FlyingBird />;
-  }
-
-  if (cartItems.length === 0) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
-          <p className="text-gray-600">Add some items to your cart to get started!</p>
-        </div>
-      </div>
-    );
-  }
-
-
-  // Toggle Wishlist Function
   const handleWishlistToggle = async (product_id: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!userData) {
+    if (!user) {
       toast.error("Please sign in to use the wishlist!");
       return;
     }
@@ -149,7 +119,7 @@ const Page = () => {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customer_id: userData.id, product_id }),
+        body: JSON.stringify({ customer_id: user.id, product_id }),
       });
 
       const data = await res.json();
@@ -157,7 +127,7 @@ const Page = () => {
       if (data.success) {
         setWishlist((prev) => ({
           ...prev,
-          [product_id]: !isCurrentlyWishlisted, // Toggle wishlist state
+          [product_id]: !isCurrentlyWishlisted,
         }));
         toast.success(isCurrentlyWishlisted ? "Removed from wishlist!" : "Added to wishlist!");
       }
@@ -167,23 +137,21 @@ const Page = () => {
     }
   };
 
-  // Update Cart Quantity API Call
   const updateCartQuantity = async (cart_id: string, product_id: number, size: string, quantity: number) => {
-    if (!userData) return;
+    if (!user) return;
 
     setLoadingStates((prev) => ({ ...prev, [product_id]: true }));
 
     try {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/cart/cart/update`, {
-        customer_id: userData.id,
+        customer_id: user.id,
         product_id,
         size,
         quantity,
-        cart_id, // Ensure cart_id is passed correctly
+        cart_id,
       });
 
       if (response.data.success) {
-        // Update only the specific cart item using cart_id
         setCartItems((prev) =>
           prev.map((item) =>
             item.cart_id === cart_id ? { ...item, quantity } : item
@@ -203,23 +171,22 @@ const Page = () => {
   };
 
   const deleteCartItem = async () => {
-    if (!userData || deleteModal.cart_id === null) return; // Use cart_id instead of product_id
+    if (!user || deleteModal.cart_id === null) return;
 
-    setLoadingStates2((prev) => ({ ...prev, [deleteModal.cart_id!]: true })); // Use cart_id for loading state
+    setLoadingStates2((prev) => ({ ...prev, [deleteModal.cart_id!]: true }));
 
     try {
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/cart/cart/remove`, {
         data: {
-          cart_id: deleteModal.cart_id, // Pass cart_id instead of product_id
+          cart_id: deleteModal.cart_id,
         },
       });
 
       if (response.data.success) {
-        // Update the cart items state by removing the deleted item using cart_id
         setCartItems((prev) =>
           prev.filter((item) => item.cart_id !== deleteModal.cart_id)
         );
-        setDeleteModal({ show: false, cart_id: null }); // Reset cart_id in the modal state
+        setDeleteModal({ show: false, cart_id: null });
       } else {
         alert(response.data.message);
       }
@@ -227,34 +194,20 @@ const Page = () => {
       console.error("Error deleting cart item:", error);
       alert("Failed to delete item");
     } finally {
-      setLoadingStates2((prev) => ({ ...prev, [deleteModal.cart_id!]: false })); // Use cart_id for loading state
+      setLoadingStates2((prev) => ({ ...prev, [deleteModal.cart_id!]: false }));
       setCouponCode("");
       setDiscountedAmount(0);
     }
   };
-console.log(cartItems)
-  const codCharge = paymentMethod === 'cod' ? 20.0 : 0;
-  const shippingCharge = 50;
-
-  // Calculate total price
-  const productTotal = cartItems.reduce((total, product) => total + product.discountedprice * product.quantity, 0);
-
-  // Calculate final amount
-  const finalAmount = productTotal + shippingCharge + codCharge - discountedAmount;
-
-  // Update the checkout button click handler
-  const handleCheckoutClick = () => {
-    setIsCheckoutModalOpen(true);
-  };
 
   const validateCoupon = async () => {
-    if (!userData?.id) return;
+    if (!user?.id) return;
     setIsLoadingCoupon(true);
 
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/coupons/validate`, {
         code: couponCode,
-        clerk_user_id: userData.id,
+        clerk_user_id: user.id,
         order_amount: productTotal,
         is_new_user: isNewUser
       });
@@ -272,6 +225,30 @@ console.log(cartItems)
     } finally {
       setIsLoadingCoupon(false);
     }
+  };
+
+  if (loading) {
+    return <FlyingBird />;
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
+          <p className="text-gray-600">Add some items to your cart to get started!</p>
+        </div>
+      </div>
+    );
+  }
+
+  const codCharge = paymentMethod === 'cod' ? 20.0 : 0;
+  const shippingCharge = 50;
+  const productTotal = cartItems.reduce((total, product) => total + product.discountedprice * product.quantity, 0);
+  const finalAmount = productTotal + shippingCharge + codCharge - discountedAmount;
+
+  const handleCheckoutClick = () => {
+    setIsCheckoutModalOpen(true);
   };
 
   return (
@@ -519,16 +496,30 @@ console.log(cartItems)
         onClose={() => setIsCheckoutModalOpen(false)}
         paymentMethod={paymentMethod}
         amount={finalAmount}
-        userId={userData?.id || ''}
-        userName={`${userData?.firstName || ''} ${userData?.lastName || ''}`}
-        userPhone={userData?.phone || ''}
+        userId={user?.id || ''}
+        userName={`${user?.firstName || ''} ${user?.lastName || ''}`}
+        userPhone={user?.primaryPhoneNumber?.phoneNumber || ''}
         subtotal={productTotal}
         discountedAmount={discountedAmount}
         shippingCharges={shippingCharge}
         codCharge={codCharge}
         couponCode={couponCode}
-        userEmail={userData?.email || ''}
-        phone2={userData?.phone || ''}
+        // userEmail={''}
+        // phone2={''}
+        // isOpen={isCheckoutModalOpen}
+        // onClose={() => setIsCheckoutModalOpen(false)}
+        // paymentMethod={paymentMethod}
+        // amount={finalAmount}
+        // userId={user?.id || ''}
+        // userName={`${user?.firstName || ''} ${user?.lastName || ''}`}
+        // userPhone={user?.phone || ''}
+        // subtotal={productTotal}
+        // discountedAmount={discountedAmount}
+        // shippingCharges={shippingCharge}
+        // codCharge={codCharge}
+        // couponCode={couponCode}
+        userEmail={user?.primaryEmailAddress?.emailAddress || ''}
+        phone2={user?.primaryPhoneNumber?.phoneNumber || ''}
       />
     </div>
   );

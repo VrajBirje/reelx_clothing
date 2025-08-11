@@ -69,7 +69,7 @@ const products = [
     name: "F1 - Lewis Hamilton Born to Win",
     price: 1299,
     discountedPrice: 649,
-    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743343004/8_mxkyhl.png",
+    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743403609/14_p5jkpy.png",
     tag: "sale"
   },
   {
@@ -77,7 +77,7 @@ const products = [
     name: "Monkey D Luffy - One Piece Gear 5",
     price: 1299,
     discountedPrice: 649,
-    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342998/2_uljdvr.png",
+    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743403827/19_jdizaf.png",
     tag: "sale"
   },
   {
@@ -85,7 +85,7 @@ const products = [
     name: "Zoro - One Piece",
     price: 1299,
     discountedPrice: 649,
-    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743343000/4_uts4gs.png",
+    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743403827/18_tobfh6.png",
     tag: "sale"
   },
   {
@@ -93,7 +93,7 @@ const products = [
     name: "Thor - God of Thunder",
     price: 1299,
     discountedPrice: 649,
-    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342993/12_v9da01.png",
+    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743403610/16_inwxxl.png",
     tag: "sale"
   },
   {
@@ -101,7 +101,7 @@ const products = [
     name: "Ronaldo - GOAT Mode",
     price: 1299,
     discountedPrice: 649,
-    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342363/20_wia7c8.png",
+    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743403603/27_zp2gvj.png",
     tag: "sale"
   },
   {
@@ -109,7 +109,7 @@ const products = [
     name: "The Unbreakable Warrior KARNA",
     price: 1299,
     discountedPrice: 649,
-    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743343001/6_v5bcws.png",
+    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743403610/13_ux2wsx.png",
     tag: "sale"
   },
   {
@@ -117,7 +117,7 @@ const products = [
     name: "Dirty Money",
     price: 1299,
     discountedPrice: 649,
-    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342993/14_hpavon.png",
+    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743403676/17_ackpj4.png",
     tag: "sale"
   },
   {
@@ -125,7 +125,7 @@ const products = [
     name: "Millionaire's Mindset",
     price: 1299,
     discountedPrice: 649,
-    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743342364/18_cownnt.png",
+    image: "https://res.cloudinary.com/dqzvpy7hf/image/upload/v1743403605/25_xkmjsi.png",
     tag: "sale"
   }
 ]

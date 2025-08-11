@@ -29,7 +29,7 @@ export const Announcement = () => {
       className={`announce w-full h-8 text-white bg-black flex items-center font-semibold justify-center text-sm transition-all duration-300 ease-in-out ${showAnnouncement ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[-100%]"
         }`}
     >
-      <div className="announcetext">Limited-Time Offer: Use code WELCOME10 for 10% OFF your first order! Shop now before prices go up  |  Wear ReelX, Feel Relax</div>
+      <div className="announcetext">Fresh New Arrivals! 🎉 Plus, enjoy a ₹100 price drop on every item — shop your favorites now before they are gone!  |  Wear ReelX, Feel Relax</div>
     </div>
   );
 };
